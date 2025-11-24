@@ -11,20 +11,11 @@ function App() {
                 <div className="header-content">
                     <div className="logo">
                         <div className="logo-icon">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <rect width="32" height="32" rx="8" fill="url(#gradient)" />
-                                <path d="M16 8v16M8 16h16" stroke="white" strokeWidth="3" strokeLinecap="round" />
-                                <defs>
-                                    <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
-                                        <stop offset="0%" stopColor="#0066cc" />
-                                        <stop offset="100%" stopColor="#00a86b" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
+                            <img src="/hms-logo.png" alt="HMS Logo" width="48" height="48" style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 102, 204, 0.4)' }} />
                         </div>
                         <div className="logo-text">
-                            <h1 className="gradient-text">OpenMRS</h1>
-                            <p className="logo-subtitle">Enterprise Medical Records</p>
+                            <h1 className="gradient-text">HMS</h1>
+                            <p className="logo-subtitle">Hospital Management System</p>
                         </div>
                     </div>
 
@@ -76,10 +67,10 @@ function App() {
                     <section className="hero slide-up">
                         <div className="hero-content">
                             <h2 className="hero-title">
-                                Welcome to <span className="gradient-text">OpenMRS Enterprise</span>
+                                Welcome to <span className="gradient-text">HMS</span>
                             </h2>
                             <p className="hero-description">
-                                Modern, scalable medical record system built with cutting-edge technology.
+                                Modern, scalable Hospital Management System built with cutting-edge technology.
                                 Manage patients, clinical workflows, and healthcare data seamlessly.
                             </p>
                             <div className="hero-actions">
@@ -197,7 +188,7 @@ function App() {
             {/* Footer */}
             <footer className="footer">
                 <div className="container">
-                    <p>Built with ❤️ for better healthcare technology • Inspired by OpenMRS</p>
+                    <p>Built with ❤️ for better healthcare technology • HMS - Hospital Management System</p>
                 </div>
             </footer>
         </div>
