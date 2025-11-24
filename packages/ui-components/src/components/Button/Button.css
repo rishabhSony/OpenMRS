@@ -1,0 +1,125 @@
+.hms-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: inherit;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+    outline: none;
+    position: relative;
+}
+
+.hms-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Sizes */
+.hms-button--small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.hms-button--medium {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+.hms-button--large {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+}
+
+/* Variants */
+.hms-button--primary {
+    background: linear-gradient(135deg, #0066cc 0%, #00a86b 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.hms-button--primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+}
+
+.hms-button--primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.hms-button--secondary {
+    background: var(--color-surface, #252b3d);
+    color: var(--color-text-primary, #ffffff);
+    border: 1px solid var(--color-border, #3a4158);
+}
+
+.hms-button--secondary:hover:not(:disabled) {
+    background: var(--color-surface-hover, #2d3447);
+    border-color: var(--color-primary, #0066cc);
+}
+
+.hms-button--outline {
+    background: transparent;
+    color: var(--color-primary, #0066cc);
+    border: 2px solid var(--color-primary, #0066cc);
+}
+
+.hms-button--outline:hover:not(:disabled) {
+    background: rgba(0, 102, 204, 0.1);
+}
+
+.hms-button--danger {
+    background: var(--color-error, #ff3d00);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 61, 0, 0.3);
+}
+
+.hms-button--danger:hover:not(:disabled) {
+    background: #e63900;
+    transform: translateY(-2px);
+}
+
+/* States */
+.hms-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hms-button--loading {
+    pointer-events: none;
+}
+
+.hms-button--full-width {
+    width: 100%;
+}
+
+/* Icon & Spinner */
+.hms-button__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hms-button__spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.hms-button__text {
+    line-height: 1;
+}
