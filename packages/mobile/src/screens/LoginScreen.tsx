@@ -5,6 +5,8 @@ import { mobileAuthService } from '../services/auth';
 export const LoginScreen = ({ navigation }: any) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [serverUrl, setServerUrl] = useState('https://dev3.openmrs.org/openmrs/ws/rest/v1');
+    const [showSettings, setShowSettings] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -26,14 +28,21 @@ export const LoginScreen = ({ navigation }: any) => {
 
         setIsLoading(true);
         try {
+            // Update base URL if changed
+            mobileAuthService.setBaseUrl(serverUrl);
             await mobileAuthService.login(username, password);
             navigation.replace('Dashboard');
-        } catch (error) {
-            Alert.alert('Error', 'Invalid credentials or server error');
+        } catch (error: any) {
             console.error(error);
+            Alert.alert('Login Failed', error.message || 'Invalid credentials or server error');
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleDemoLogin = () => {
+        // Bypass auth for demo
+        navigation.replace('Dashboard');
     };
 
     return (
@@ -65,6 +74,17 @@ export const LoginScreen = ({ navigation }: any) => {
                         placeholderTextColor="#868e96"
                     />
 
+                    {showSettings && (
+                        <TextInput
+                            className="w-full bg-background border border-border rounded-lg p-4 text-text mt-2"
+                            placeholder="Server URL"
+                            value={serverUrl}
+                            onChangeText={setServerUrl}
+                            autoCapitalize="none"
+                            placeholderTextColor="#868e96"
+                        />
+                    )}
+
                     <TouchableOpacity
                         className="w-full bg-primary p-4 rounded-lg items-center mt-4"
                         onPress={handleLogin}
@@ -75,6 +95,23 @@ export const LoginScreen = ({ navigation }: any) => {
                         ) : (
                             <Text className="text-white font-bold text-lg">Login</Text>
                         )}
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="w-full border border-primary p-4 rounded-lg items-center mt-2"
+                        onPress={handleDemoLogin}
+                        disabled={isLoading}
+                    >
+                        <Text className="text-primary font-bold text-lg">Demo Mode (Offline)</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="items-center mt-4"
+                        onPress={() => setShowSettings(!showSettings)}
+                    >
+                        <Text className="text-muted text-sm">
+                            {showSettings ? 'Hide Server Settings' : 'Server Settings'}
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>

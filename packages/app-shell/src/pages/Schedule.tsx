@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Card, Button } from '@openmrs-enterprise/ui-components';
+import { Calendar, Card, Button, Spinner } from '@openmrs-enterprise/ui-components';
 import type { CalendarEvent } from '@openmrs-enterprise/ui-components';
 import { TeamNotesModal } from '../components/schedule/TeamNotesModal';
 import { AppointmentModal } from '../components/schedule/AppointmentModal';
@@ -10,7 +10,7 @@ import type { TeamNote } from '../data/syntheticSchedule';
 import { useAppointments } from '../hooks/useAppointments';
 
 export const Schedule: React.FC = () => {
-    const { appointments, providerSchedules, createAppointment } = useAppointments();
+    const { appointments, providerSchedules, createAppointment, isLoading } = useAppointments();
     const [notes, setNotes] = useState<TeamNote[]>([]); // Keep notes local for now
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -109,13 +109,19 @@ export const Schedule: React.FC = () => {
             </div>
 
             <div className="schedule-content" style={{ marginTop: '1.5rem' }}>
-                <Card>
-                    <Calendar
-                        events={calendarEvents}
-                        onSelectSlot={handleSelectSlot}
-                        height={700}
-                    />
-                </Card>
+                {isLoading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem' }}>
+                        <Spinner size="lg" />
+                    </div>
+                ) : (
+                    <Card>
+                        <Calendar
+                            events={calendarEvents}
+                            onSelectSlot={handleSelectSlot}
+                            height={700}
+                        />
+                    </Card>
+                )}
             </div>
 
             <EventTypeSelectionModal

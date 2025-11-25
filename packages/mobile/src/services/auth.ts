@@ -1,9 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authService, ApiClient } from '@openmrs-enterprise/core';
 
-// Android Emulator loopback address. Use your machine's IP for iOS or physical device.
-// const API_BASE_URL = 'http://10.0.2.2:8080/openmrs/ws/rest/v1';
-const API_BASE_URL = 'http://192.168.29.252:8080/openmrs/ws/rest/v1';
+import { Platform } from 'react-native';
+
+// Use public demo server for web/default, and Android emulator localhost for Android
+const API_BASE_URL = Platform.OS === 'web'
+    ? 'https://dev3.openmrs.org/openmrs/ws/rest/v1'
+    : 'http://10.0.2.2:8080/openmrs/ws/rest/v1';
 const AUTH_TOKEN_KEY = 'auth_token';
 
 export const mobileAuthService = {
@@ -48,6 +51,10 @@ export const mobileAuthService = {
             authService.getClient().setHeader('Authorization', '');
             throw error;
         }
+    },
+
+    setBaseUrl(url: string) {
+        authService.configure({ baseUrl: url });
     },
 
     async logout() {
