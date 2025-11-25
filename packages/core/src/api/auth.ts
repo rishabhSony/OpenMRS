@@ -22,7 +22,14 @@ export class AuthService {
 
     private constructor() {
         // Use relative path to go through Vite proxy
-        this.client = new ApiClient({ baseUrl: '/openmrs/ws/rest/v1' });
+        this.client = new ApiClient({
+            baseUrl: '/openmrs/ws/rest/v1',
+            onUnauthorized: () => {
+                if (typeof window !== 'undefined') {
+                    window.location.href = '/login';
+                }
+            }
+        });
     }
 
     /**

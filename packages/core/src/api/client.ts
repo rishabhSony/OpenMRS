@@ -6,6 +6,7 @@ export interface ApiConfig {
     baseUrl: string;
     timeout?: number;
     headers?: Record<string, string>;
+    onUnauthorized?: () => void;
 }
 
 /**
@@ -16,6 +17,7 @@ export class ApiClient {
     private baseUrl: string;
     private headers: Record<string, string>;
     private timeout: number;
+    private onUnauthorized?: () => void;
 
     /**
      * Creates an instance of ApiClient.
@@ -28,6 +30,11 @@ export class ApiClient {
             ...(config.headers || {}),
         };
         this.timeout = config.timeout || 30000; // Default to 30 seconds
+        this.onUnauthorized = config.onUnauthorized;
+    }
+
+    public setOnUnauthorized(callback: () => void) {
+        this.onUnauthorized = callback;
     }
 
     public setBaseUrl(url: string) {
@@ -68,7 +75,9 @@ export class ApiClient {
 
             if (response.status === 401) {
                 // Handle unauthorized
-                window.location.href = '/login';
+                if (this.onUnauthorized) {
+                    this.onUnauthorized();
+                }
                 throw new Error('Unauthorized');
             }
 

@@ -11,6 +11,7 @@ export * from './api/client';
 export * from './api/auth';
 export * from './api/clinical';
 export * from './api/appointments';
+export * from './api/patient';
 export * from './types';
 export * from './types/vitals';
 
