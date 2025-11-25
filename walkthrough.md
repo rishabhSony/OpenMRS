@@ -81,6 +81,7 @@ This walkthrough documents the successful integration of the OpenMRS frontend ap
 ### 11. Security Enhancements (New)
 - **Session Timeout**: Implemented auto-logout after 15 minutes of inactivity.
 - **RBAC**: Restricted "Reports" page to users with "System Developer" role.
+- **Cookie-Based Auth**: Migrated from localStorage Basic Auth to secure `JSESSIONID` cookies via Proxy.
 
 ![RBAC Denied (Dashboard)](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/rbac_dashboard_denied_1764046812944.png)
 ![RBAC Allowed (Reports)](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/rbac_reports_allowed_1764046957902.png)

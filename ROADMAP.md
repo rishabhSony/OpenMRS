@@ -3,9 +3,9 @@
 This document outlines the strategic plan for future enhancements to the OpenMRS Enterprise HMS application. While the core functionality (Patient Management, Clinical Dashboard, Reports) is complete, the following improvements will elevate the system's reliability, security, and usability, especially for low-resource settings.
 
 ## 1. Security & Authentication
-- [ ] **Token-Based Authentication**: Migrate from Basic Auth (stored in localStorage) to a more secure, cookie-based session management or JWT flow integrated with OpenMRS.
-- [ ] **Role-Based Access Control (RBAC)**: Implement UI logic to hide/disable features based on the logged-in user's privileges (e.g., only admins can delete patients).
-- [ ] **Session Timeout**: Auto-logout users after a period of inactivity to protect patient data.
+- [x] **Token-Based Authentication**: Migrated from Basic Auth (stored in localStorage) to secure, cookie-based session management integrated with OpenMRS.
+- [x] **Role-Based Access Control (RBAC)**: Implemented UI logic to hide/disable features based on the logged-in user's privileges (e.g., Reports restricted to System Developers).
+- [x] **Session Timeout**: Auto-logout users after 15 minutes of inactivity to protect patient data.
 
 ## 2. Offline & Low-Resource Optimization
 - [ ] **Progressive Web App (PWA)**: Configure Vite PWA plugin to allow the app to be installed on devices and load offline.
