@@ -2,6 +2,7 @@ import React from 'react';
 import { Calendar as BigCalendar, momentLocalizer, View, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import './Calendar.css';
 
 // Setup the localizer by providing the moment Object
 const localizer = momentLocalizer(moment);
@@ -30,7 +31,7 @@ export const Calendar: React.FC<CalendarProps> = ({
     height = 600
 }) => {
     return (
-        <div style={{ height, background: 'white', padding: '1rem', borderRadius: '8px' }}>
+        <div style={{ height, padding: '1rem', borderRadius: '8px', background: 'white' }}>
             <BigCalendar
                 localizer={localizer}
                 events={events}
