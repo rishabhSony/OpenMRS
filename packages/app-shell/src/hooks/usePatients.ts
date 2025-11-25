@@ -3,6 +3,12 @@ import { authService } from '@openmrs-enterprise/core';
 import type { Patient } from '@openmrs-enterprise/core';
 import { useToast } from '@openmrs-enterprise/ui-components';
 
+/**
+ * Custom hook for managing patient data.
+ * Provides functionality to fetch, search, and create patients via the API.
+ * 
+ * @returns {Object} An object containing patient data, loading state, and action methods.
+ */
 export const usePatients = () => {
     const [patients, setPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState(false);
@@ -10,6 +16,12 @@ export const usePatients = () => {
     const { showToast } = useToast();
     const client = authService.getClient();
 
+    /**
+     * Fetches patients from the API.
+     * If a query is provided, performs a search; otherwise, fetches recent patients.
+     * 
+     * @param {string} [query] - Optional search string (name or identifier).
+     */
     const fetchPatients = useCallback(async (query?: string) => {
         setLoading(true);
         setError(null);

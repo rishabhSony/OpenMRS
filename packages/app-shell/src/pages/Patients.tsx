@@ -185,13 +185,18 @@ const PatientDetails: React.FC<{ patient: Patient; onClose: () => void }> = ({ p
 
 // --- Main Component ---
 
+/**
+ * Patients Page Component.
+ * Displays a list of patients with search functionality and a registration modal.
+ * Uses the `usePatients` hook for data fetching and state management.
+ */
 export const Patients: React.FC = () => {
     const { patients, loading, fetchPatients, createPatient } = usePatients();
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
     const [showRegistration, setShowRegistration] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
-    // Debounce search
+    // Debounce search to avoid excessive API calls
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchPatients(searchQuery);
@@ -199,153 +204,123 @@ export const Patients: React.FC = () => {
         return () => clearTimeout(timer);
     }, [searchQuery, fetchPatients]);
 
-    const calculateAge = (dob: string) => {
-        if (!dob) return 'N/A';
-        const birthDate = new Date(dob);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
+    const handleCreatePatient = async (data: any) => {
+        try {
+            await createPatient(data);
+            setShowRegistration(false);
+        } catch (err) {
+            // Error handled in hook
         }
-        return age;
     };
 
     const columns: Column<Patient>[] = [
         {
-            key: 'uuid',
-            header: 'Patient ID',
-            render: (p) => <span className="patient-id">{p.identifiers?.[0]?.identifier || 'N/A'}</span>
-        },
-        {
             key: 'name',
             header: 'Name',
-            render: (p) => {
-                const name = p.person.names.find(n => n.preferred) || p.person.names[0];
+            render: (patient: Patient) => {
+                const name = patient.person.names.find(n => n.preferred) || patient.person.names[0];
                 const fullName = name ? `${name.givenName} ${name.familyName}` : 'Unknown';
                 const initials = name ? `${name.givenName[0]}${name.familyName[0]}` : '??';
                 return (
-                    <div className="patient-name">
-                        <div className="avatar">{initials}</div>
-                        <span>{fullName}</span>
+                    <div className="patient-name-cell">
+                        <div className="avatar-placeholder">
+                            {initials}
+                        </div>
+                        <div>
+                            <span className="patient-name">
+                                {fullName}
+                            </span>
+                            <span className="patient-id">{patient.identifiers[0]?.identifier}</span>
+                        </div>
                     </div>
                 );
             }
         },
         {
-            key: 'age',
-            header: 'Age/Gender',
-            render: (p) => `${p.person.age || calculateAge(p.person.birthdate)} / ${p.person.gender}`
-        },
-        {
-            key: 'address',
-            header: 'Address',
-            render: (p) => {
-                const addr = p.person.addresses?.[0];
-                return addr ? `${addr.cityVillage || ''}, ${addr.country || ''}` : 'N/A';
-            }
-        },
-        {
-            key: 'status',
-            header: 'Status',
-            render: (p) => (
-                <Badge variant={!p.voided ? 'success' : 'default'}>
-                    {!p.voided ? 'Active' : 'Voided'}
+            key: 'gender',
+            header: 'Gender',
+            render: (patient: Patient) => (
+                <Badge variant={patient.person.gender === 'M' ? 'primary' : 'success'}>
+                    {patient.person.gender === 'M' ? 'Male' : 'Female'}
                 </Badge>
             )
         },
         {
+            key: 'age',
+            header: 'Age',
+            render: (patient: Patient) => patient.person.age?.toString() || 'N/A'
+        },
+        {
+            key: 'birthdate',
+            header: 'Birthdate',
+            render: (patient: Patient) => new Date(patient.person.birthdate).toLocaleDateString()
+        },
+        {
             key: 'actions',
             header: 'Actions',
-            render: (p) => (
+            render: (patient: Patient) => (
                 <Button
-                    variant="secondary"
                     size="small"
-                    onClick={(e) => { e.stopPropagation(); setSelectedPatient(p); }}
+                    variant="ghost"
+                    onClick={() => setSelectedPatient(patient)}
                 >
-                    View
+                    View Details
                 </Button>
             )
         }
     ];
 
-    const handleRegister = async (data: any) => {
-        try {
-            await createPatient(data);
-            setShowRegistration(false);
-        } catch (error) {
-            // Error handled in hook
-        }
-    };
-
     return (
         <div className="patients-page">
-            <div className="patients-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div className="page-header">
                 <div>
-                    <h1>Patient Management</h1>
-                    <p className="subtitle">Manage patient records and information</p>
+                    <h1>Patients</h1>
+                    <p className="subtitle">Manage patient records and registration</p>
                 </div>
-                <Button variant="primary" onClick={() => setShowRegistration(true)}>
-                    New Patient
+                <Button onClick={() => setShowRegistration(true)}>
+                    + Register Patient
                 </Button>
             </div>
 
-            <div className="patients-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-                <Card className="stat-card card-glass">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #0066cc, #3385d6)', padding: '1rem', borderRadius: '0.75rem', color: 'white' }}>
-                            📊
-                        </div>
-                        <div>
-                            <p className="stat-label" style={{ margin: 0, color: 'var(--color-text-muted)' }}>Total Patients</p>
-                            <h3 className="stat-value" style={{ margin: 0, fontSize: '1.5rem' }}>{patients.length}</h3>
-                        </div>
-                    </div>
-                </Card>
-                <Card className="stat-card card-glass">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #00a86b, #00c853)', padding: '1rem', borderRadius: '0.75rem', color: 'white' }}>
-                            ✅
-                        </div>
-                        <div>
-                            <p className="stat-label" style={{ margin: 0, color: 'var(--color-text-muted)' }}>Active</p>
-                            <h3 className="stat-value" style={{ margin: 0, fontSize: '1.5rem' }}>{patients.filter(p => !p.voided).length}</h3>
-                        </div>
-                    </div>
-                </Card>
-            </div>
-
-            <Card>
-                <div className="search-section" style={{ marginBottom: '1.5rem' }}>
+            <div className="patients-content">
+                <Card className="search-card">
                     <Input
-                        placeholder="Search by name or ID..."
+                        placeholder="Search patients by name or ID..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{ maxWidth: '400px' }}
+                        className="search-input"
                     />
-                </div>
+                </Card>
 
-                <Table
-                    columns={columns}
-                    data={patients}
-                    onRowClick={(p) => setSelectedPatient(p)}
-                    isLoading={loading}
-                    keyExtractor={(p) => p.uuid}
-                />
-            </Card>
+                <Card className="table-card">
+                    <Table
+                        columns={columns}
+                        data={patients}
+                        isLoading={loading}
+                        keyExtractor={(patient) => patient.uuid}
+                        onRowClick={(patient) => setSelectedPatient(patient)}
+                    />
+                </Card>
+            </div>
 
             <Modal
                 isOpen={showRegistration}
                 onClose={() => setShowRegistration(false)}
-                title="New Patient Registration"
-                size="lg"
+                title="Register New Patient"
             >
-                <PatientRegistrationForm onSubmit={handleRegister} onCancel={() => setShowRegistration(false)} />
+                <PatientRegistrationForm
+                    onSubmit={handleCreatePatient}
+                    onCancel={() => setShowRegistration(false)}
+                />
             </Modal>
 
-            {selectedPatient && (
-                <PatientDetails patient={selectedPatient} onClose={() => setSelectedPatient(null)} />
-            )}
+            <Modal
+                isOpen={!!selectedPatient}
+                onClose={() => setSelectedPatient(null)}
+                title="Patient Details"
+            >
+                {selectedPatient && <PatientDetails patient={selectedPatient} onClose={() => setSelectedPatient(null)} />}
+            </Modal>
         </div>
     );
 };

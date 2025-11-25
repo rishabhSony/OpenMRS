@@ -15,6 +15,11 @@ import { usePatients } from '../hooks/usePatients';
 import type { Appointment } from '@openmrs-enterprise/core';
 import './Appointments.css';
 
+/**
+ * Appointments Page Component.
+ * Manages patient appointments with List and Calendar views.
+ * Allows scheduling new appointments via a modal form.
+ */
 export const Appointments: React.FC = () => {
     const { appointments, loading, fetchAppointments, createAppointment } = useAppointments();
     const { patients, fetchPatients } = usePatients();
@@ -22,6 +27,7 @@ export const Appointments: React.FC = () => {
     const [showScheduleModal, setShowScheduleModal] = useState(false);
     const [view, setView] = useState<'list' | 'calendar'>('list');
 
+    // Fetch initial data on mount
     useEffect(() => {
         fetchAppointments();
         fetchPatients();

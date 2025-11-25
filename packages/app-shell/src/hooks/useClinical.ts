@@ -3,6 +3,12 @@ import { authService } from '@openmrs-enterprise/core';
 import type { Observation, Order, Encounter } from '@openmrs-enterprise/core';
 import { useToast } from '@openmrs-enterprise/ui-components';
 
+/**
+ * Custom hook for fetching clinical data for a specific patient.
+ * Manages state for vitals (observations), medications (orders), and lab results (encounters).
+ * 
+ * @returns {Object} Clinical data states and fetch methods.
+ */
 export const useClinical = () => {
     const [vitals, setVitals] = useState<Observation[]>([]);
     const [medications, setMedications] = useState<Order[]>([]);
@@ -11,6 +17,11 @@ export const useClinical = () => {
     const { showToast } = useToast();
     const client = authService.getClient();
 
+    /**
+     * Fetches all clinical data for a given patient UUID.
+     * 
+     * @param {string} patientUuid - The UUID of the patient to fetch data for.
+     */
     const fetchPatientClinicalData = useCallback(async (patientUuid: string) => {
         if (!patientUuid) return;
 

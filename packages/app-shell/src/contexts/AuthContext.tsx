@@ -17,9 +17,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const session = authService.getSession();
-        if (session) {
-            setUser(session.user);
+        const user = authService.getUser();
+        if (user) {
+            setUser(user);
         }
         setIsLoading(false);
     }, []);

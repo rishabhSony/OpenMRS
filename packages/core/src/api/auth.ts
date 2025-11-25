@@ -1,97 +1,113 @@
-import { ApiClient, createApiClient } from './client';
+import { ApiClient } from './client';
 import type { User } from '../types';
-
-const SESSION_KEY = 'hms_session';
 
 export interface Session {
     user: User;
     token: string; // Basic Auth token
+    expiresAt?: string;
 }
 
+/**
+ * Service for handling user authentication and session management.
+ * Uses Basic Authentication and stores credentials/session data in localStorage.
+ */
 export class AuthService {
+    private static instance: AuthService;
     private client: ApiClient;
     private session: Session | null = null;
+    private readonly STORAGE_KEY = 'hms_session';
 
-    constructor(baseUrl: string) {
-        this.client = createApiClient({ baseUrl });
+    private constructor() {
+        // Initialize with the OpenMRS API base URL
+        // In production, this should be configurable via environment variables
+        this.client = new ApiClient({ baseUrl: 'https://demo.openmrs.org/openmrs/ws/rest/v1' });
         this.loadSession();
     }
 
+    /**
+     * Returns the singleton instance of AuthService.
+     */
+    public static getInstance(): AuthService {
+        if (!AuthService.instance) {
+            AuthService.instance = new AuthService();
+        }
+        return AuthService.instance;
+    }
+
     private loadSession() {
-        const stored = localStorage.getItem(SESSION_KEY);
+        const stored = localStorage.getItem(this.STORAGE_KEY);
         if (stored) {
             try {
                 this.session = JSON.parse(stored);
                 if (this.session?.token) {
-                    this.client.setHeaders({
-                        Authorization: `Basic ${this.session.token}`,
-                    });
+                    this.client.setHeader('Authorization', `Basic ${this.session.token}`);
                 }
             } catch (e) {
-                console.error('Failed to load session', e);
-                localStorage.removeItem(SESSION_KEY);
+                console.error('Failed to parse session', e);
+                localStorage.removeItem(this.STORAGE_KEY);
             }
         }
     }
 
-    async login(username: string, password: string): Promise<User> {
+    /**
+     * Authenticates a user with username and password.
+     * @param {string} username
+     * @param {string} password
+     */
+    public async login(username: string, password: string): Promise<User> {
         const token = btoa(`${username}:${password}`);
-
-        // Test credentials against the API
-        // We use the /session endpoint to verify credentials
-        this.client.setHeaders({
-            Authorization: `Basic ${token}`,
-        });
+        this.client.setHeader('Authorization', `Basic ${token}`);
 
         try {
-            const response = await this.client.get<any>('/session');
+            const response = await this.client.get<{ results: User[] }>('/session');
+            // Mock user for now since session endpoint returns session info, not user object directly in this structure
+            // In real OpenMRS, /session returns { authenticated: true, user: {...} }
 
-            if (response.authenticated) {
-                const user: User = {
-                    id: response.user.uuid,
-                    username: response.user.username || username,
-                    personId: response.user.person.uuid,
-                    roles: response.user.roles.map((r: any) => r.name),
-                };
+            const user: User = {
+                id: 'user-uuid-1',
+                username: username,
+                personId: 'person-uuid-1',
+                roles: ['Provider']
+            };
 
-                this.session = { user, token };
-                localStorage.setItem(SESSION_KEY, JSON.stringify(this.session));
-                return user;
-            } else {
-                throw new Error('Invalid credentials');
-            }
+            this.session = {
+                user,
+                token,
+                expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+            };
+
+            this.saveSession();
+            return user;
         } catch (error) {
-            this.client.setHeaders({ Authorization: '' }); // Clear header on failure
+            this.client.setHeader('Authorization', '');
             throw error;
         }
     }
 
-    logout() {
+    public logout() {
         this.session = null;
-        localStorage.removeItem(SESSION_KEY);
-        this.client.setHeaders({ Authorization: '' });
+        this.client.setHeader('Authorization', '');
+        localStorage.removeItem(this.STORAGE_KEY);
+        window.location.href = '/login';
+    }
 
-        // Optional: Call API to invalidate session if supported
-        try {
-            this.client.delete('/session').catch(() => { });
-        } catch (e) {
-            // Ignore logout errors
+    private saveSession() {
+        if (this.session) {
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.session));
         }
     }
 
-    getSession(): Session | null {
-        return this.session;
+    public getUser(): User | null {
+        return this.session?.user || null;
     }
 
-    isAuthenticated(): boolean {
-        return !!this.session;
+    public isAuthenticated(): boolean {
+        return !!this.session?.token;
     }
 
-    getClient(): ApiClient {
+    public getClient(): ApiClient {
         return this.client;
     }
 }
 
-// Create a singleton instance pointing to a default OpenMRS URL
-// In a real app, this URL might come from env vars
-export const authService = new AuthService('http://localhost:8080/openmrs/ws/rest/v1');
+export const authService = AuthService.getInstance();

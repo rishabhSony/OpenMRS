@@ -3,12 +3,25 @@ import { authService } from '@openmrs-enterprise/core';
 import type { Appointment } from '@openmrs-enterprise/core';
 import { useToast } from '@openmrs-enterprise/ui-components';
 
+/**
+ * Custom hook for managing appointments.
+ * Handles fetching appointments by date range and creating new appointments.
+ * 
+ * @returns {Object} Appointment data, loading state, and management methods.
+ */
 export const useAppointments = () => {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(false);
     const { showToast } = useToast();
     const client = authService.getClient();
 
+    /**
+     * Fetches appointments within a specified date range.
+     * Defaults to the next 14 days if no dates are provided.
+     * 
+     * @param {string} [startDate] - ISO date string for the start of the range.
+     * @param {string} [endDate] - ISO date string for the end of the range.
+     */
     const fetchAppointments = useCallback(async (startDate?: string, endDate?: string) => {
         setLoading(true);
         try {
