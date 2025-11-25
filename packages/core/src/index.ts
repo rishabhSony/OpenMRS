@@ -10,6 +10,7 @@ export * from './types';
 export * from './api/client';
 export * from './api/auth';
 export * from './types';
+export * from './types/vitals';
 
 // Utilities
 export * from './utils';

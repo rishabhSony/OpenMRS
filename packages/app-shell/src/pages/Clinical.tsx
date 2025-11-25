@@ -9,6 +9,7 @@ import {
 import { useClinical } from '../hooks/useClinical';
 import { usePatients } from '../hooks/usePatients';
 import type { Observation, Order, Encounter } from '@openmrs-enterprise/core';
+import { VitalsForm } from '../components/VitalsForm';
 import './Clinical.css';
 
 /**
@@ -133,12 +134,14 @@ export const Clinical: React.FC = () => {
                 onClose={() => setShowVitalsModal(false)}
                 title="Record Vitals"
             >
-                <div style={{ padding: '1rem' }}>
-                    <p>Vitals form placeholder</p>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                        <Button onClick={() => setShowVitalsModal(false)}>Close</Button>
-                    </div>
-                </div>
+                <VitalsForm
+                    onSubmit={(data) => {
+                        console.log('Vitals submitted:', data);
+                        // TODO: Integrate with API to save vitals
+                        setShowVitalsModal(false);
+                    }}
+                    onCancel={() => setShowVitalsModal(false)}
+                />
             </Modal>
         </div>
     );

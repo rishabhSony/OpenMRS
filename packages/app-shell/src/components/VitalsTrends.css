@@ -1,0 +1,43 @@
+.vitals-trends {
+    margin-top: 2rem;
+}
+
+.chart-container {
+    margin-bottom: 2rem;
+}
+
+.chart-container h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.no-data {
+    padding: 3rem;
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+}
+
+/* Recharts customization */
+.recharts-wrapper {
+    font-family: inherit;
+}
+
+.recharts-cartesian-axis-tick-value {
+    fill: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.recharts-legend-item-text {
+    color: var(--color-text-primary) !important;
+    font-size: 0.875rem;
+}
+
+.recharts-tooltip-wrapper {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}

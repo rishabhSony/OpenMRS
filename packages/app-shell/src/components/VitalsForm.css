@@ -1,0 +1,128 @@
+.vitals-form {
+    padding: 1rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bp-group {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.bp-separator {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding-bottom: 0.5rem;
+    color: var(--color-text-secondary);
+}
+
+.temp-group,
+.weight-group,
+.height-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.unit-select {
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    min-width: 60px;
+    height: 42px;
+}
+
+.vital-normal input {
+    border-color: var(--color-success);
+}
+
+.vital-abnormal input {
+    border-color: var(--color-error);
+    background-color: rgba(244, 67, 54, 0.05);
+}
+
+.bmi-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.bmi-display label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.bmi-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    padding: 0.5rem;
+    background: var(--color-surface-variant);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.notes-section {
+    grid-column: 1 / -1;
+}
+
+.notes-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.notes-section textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bp-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .bp-separator {
+        display: none;
+    }
+}

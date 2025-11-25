@@ -207,6 +207,22 @@ export interface User {
     roles: string[];
 }
 
+export interface Vitals {
+    uuid: string;
+    patient: Patient;
+    encounter: Encounter;
+    temperature?: number;
+    pulse?: number;
+    respiratoryRate?: number;
+    bloodPressureSystolic?: number;
+    bloodPressureDiastolic?: number;
+    weight?: number;
+    height?: number;
+    bmi?: number;
+    oxygenSaturation?: number;
+    dateCreated: string;
+}
+
 export interface Appointment {
     uuid: string;
     display?: string;
