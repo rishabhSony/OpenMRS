@@ -18,46 +18,13 @@ export const usePatients = () => {
     const queryClient = useQueryClient();
 
     const fetchPatientsFn = async () => {
-        // Use synthetic data for demo purposes
-        // In a real app, this would be an API call
-        const { generateSyntheticPatients } = await import('../data/syntheticPatients');
-        const syntheticData = generateSyntheticPatients(1248);
-
-        // Map synthetic data to OpenMRS Patient structure
-        return syntheticData.map(p => ({
-            uuid: p.id,
-            display: p.name,
-            identifiers: [{
-                uuid: 'id-' + p.id,
-                identifier: p.id.replace('PAT-', ''),
-                identifierType: { uuid: 'type-1', name: 'OpenMRS ID', description: '' },
-                preferred: true
-            }],
-            person: {
-                uuid: 'person-' + p.id,
-                display: p.name,
-                gender: p.gender,
-                age: p.age,
-                birthdate: new Date(new Date().getFullYear() - p.age, 0, 1).toISOString(),
-                birthdateEstimated: true,
-                dead: false,
-                names: [{
-                    uuid: 'name-' + p.id,
-                    givenName: p.name.split(' ')[0],
-                    familyName: p.name.split(' ').slice(1).join(' '),
-                    preferred: true
-                }],
-                addresses: [{
-                    uuid: 'addr-' + p.id,
-                    preferred: true,
-                    cityVillage: p.city,
-                    stateProvince: p.state,
-                    country: 'India'
-                }],
-                attributes: []
-            },
-            voided: false
-        } as Patient));
+        // Fetch real patients from OpenMRS API
+        const response = await client.get<{ results: Patient[] }>('/patient', {
+            q: query || ' ', // OpenMRS requires a query parameter, use space for "all" (if supported) or handle empty query
+            v: 'full',
+            limit: 50 // Limit to 50 for performance
+        });
+        return response.results || [];
     };
 
     const { data: patients = [], isLoading, error } = useQuery({

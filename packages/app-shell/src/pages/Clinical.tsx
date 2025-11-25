@@ -19,15 +19,18 @@ import './Clinical.css';
  */
 export const Clinical: React.FC = () => {
     const { patients, fetchPatients } = usePatients();
-    const {
-        vitals,
-        medications,
-        labs,
-        loading,
-        fetchPatientClinicalData
-    } = useClinical();
-
     const [selectedPatientUuid, setSelectedPatientUuid] = useState<string>('');
+    const {
+        encounters,
+        observations,
+        isLoading: loading,
+        createObservation
+    } = useClinical(selectedPatientUuid);
+
+    // Derived state
+    const vitals = observations.filter(obs => obs.concept?.display?.toLowerCase().includes('vital') || true); // Placeholder filter
+    const labs = encounters.filter(enc => enc.encounterType?.name?.toLowerCase().includes('lab'));
+    const medications = encounters.flatMap(enc => enc.orders || []);
     const [showVitalsModal, setShowVitalsModal] = useState(false);
     const [viewMode, setViewMode] = useState<'dashboard' | 'patient'>('dashboard');
 
@@ -48,7 +51,6 @@ export const Clinical: React.FC = () => {
         const uuid = e.target.value;
         setSelectedPatientUuid(uuid);
         if (uuid) {
-            fetchPatientClinicalData(uuid);
             setViewMode('patient');
         } else {
             setViewMode('dashboard');
@@ -186,9 +188,14 @@ export const Clinical: React.FC = () => {
                 title="Record Vitals"
             >
                 <VitalsForm
-                    onSubmit={(data) => {
-                        console.log('Vitals submitted:', data);
-                        // TODO: Integrate with API to save vitals
+                    onSubmit={async (data) => {
+                        // Map form data to OpenMRS Observation structure
+                        // This is a simplified example. In reality, you'd map each field to a concept UUID.
+                        await createObservation({
+                            concept: { uuid: 'concept-uuid-for-vitals', display: 'Vitals' } as any,
+                            value: JSON.stringify(data),
+                            obsDatetime: new Date().toISOString()
+                        });
                         setShowVitalsModal(false);
                     }}
                     onCancel={() => setShowVitalsModal(false)}

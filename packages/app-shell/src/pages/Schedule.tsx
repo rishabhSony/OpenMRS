@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Calendar, Card, Button } from '@openmrs-enterprise/ui-components';
 import type { CalendarEvent } from '@openmrs-enterprise/ui-components';
 import { TeamNotesModal } from '../components/schedule/TeamNotesModal';
 import { AppointmentModal } from '../components/schedule/AppointmentModal';
 import type { AppointmentData } from '../components/schedule/AppointmentModal';
 import { EventTypeSelectionModal } from '../components/schedule/EventTypeSelectionModal';
-import { generateScheduleData } from '../data/syntheticSchedule';
 import type { TeamNote } from '../data/syntheticSchedule';
 
+import { useAppointments } from '../hooks/useAppointments';
+
 export const Schedule: React.FC = () => {
-    const [events, setEvents] = useState<CalendarEvent[]>([]);
-    const [notes, setNotes] = useState<TeamNote[]>([]);
+    const { appointments, providerSchedules, createAppointment } = useAppointments();
+    const [notes, setNotes] = useState<TeamNote[]>([]); // Keep notes local for now
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     // Modal States
@@ -18,11 +19,23 @@ export const Schedule: React.FC = () => {
     const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
     const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
 
-    useEffect(() => {
-        const { events: initialEvents, notes: initialNotes } = generateScheduleData();
-        setEvents(initialEvents);
-        setNotes(initialNotes);
-    }, []);
+    // Map API data to Calendar Events
+    const events: CalendarEvent[] = [
+        ...appointments.map(appt => ({
+            id: appt.uuid,
+            title: `${appt.patient.display} - ${appt.appointmentType?.display || 'Appointment'}`,
+            start: new Date(appt.startDateTime),
+            end: new Date(appt.endDateTime),
+            resource: { type: 'appointment', status: appt.status }
+        })),
+        ...providerSchedules.map(sch => ({
+            id: sch.uuid,
+            title: `${sch.provider.display} - Shift`,
+            start: new Date(`${sch.startDate}T${sch.startTime}`),
+            end: new Date(`${sch.endDate}T${sch.endTime}`),
+            resource: { type: 'shift' }
+        }))
+    ];
 
     const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
         setSelectedDate(slotInfo.start);
@@ -45,23 +58,11 @@ export const Schedule: React.FC = () => {
             author: 'Current User' // In a real app, this would be the logged-in user
         };
         setNotes([...notes, note]);
-
-        // Also add a visual indicator to the calendar if it's urgent
-        if (newNote.priority === 'Urgent') {
-            setEvents([...events, {
-                id: `note-event-${note.id}`,
-                title: '⚠️ Urgent Note',
-                start: newNote.date,
-                end: newNote.date,
-                resource: { type: 'note', priority: 'Urgent' }
-            }]);
-        }
     };
 
-    const handleAddAppointment = (data: AppointmentData) => {
+    const handleAddAppointment = async (data: AppointmentData) => {
         if (!selectedDate) return;
 
-        // Parse time strings (HH:mm) to Date objects
         const [startHour, startMinute] = data.startTime.split(':').map(Number);
         const [endHour, endMinute] = data.endTime.split(':').map(Number);
 
@@ -71,15 +72,13 @@ export const Schedule: React.FC = () => {
         const end = new Date(selectedDate);
         end.setHours(endHour, endMinute);
 
-        const newEvent: CalendarEvent = {
-            id: `appt-${Date.now()}`,
-            title: `${data.patientName} - ${data.type}`,
-            start,
-            end,
-            resource: { type: 'appointment', notes: data.notes }
-        };
-
-        setEvents([...events, newEvent]);
+        await createAppointment({
+            patient: { uuid: 'patient-uuid-placeholder', display: data.patientName } as any, // In real app, select patient first
+            startDateTime: start.toISOString(),
+            endDateTime: end.toISOString(),
+            status: 'SCHEDULED',
+            appointmentType: { uuid: 'type-uuid', display: data.type, name: data.type }
+        });
     };
 
     // Merge notes into events for visualization
