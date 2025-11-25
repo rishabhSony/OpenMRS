@@ -30,6 +30,10 @@ export class ApiClient {
         this.timeout = config.timeout || 30000; // Default to 30 seconds
     }
 
+    public setBaseUrl(url: string) {
+        this.baseUrl = url;
+    }
+
     /**
      * Sets a custom header for all subsequent requests.
      * @param {string} key - The header name.

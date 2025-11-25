@@ -1,63 +1,101 @@
 # OpenMRS Enterprise Frontend
 
-A modern, high-performance frontend for OpenMRS, built with React, TypeScript, and Vite.
+A modern, high-performance frontend for OpenMRS, built with React, TypeScript, and Vite. This application provides a premium user interface for hospital management, including Patient Registration, Clinical Dashboards, and Appointment Scheduling.
 
-## Features
+## 🚀 Features
 
-- **Modern UI/UX**: Built with a custom design system using glassmorphism and modern aesthetics.
-- **Modular Architecture**: Monorepo structure with separate packages for core logic, UI components, and the app shell.
-- **Role-Based Access**: Secure authentication and role-based route protection.
-- **Patient Management**: Comprehensive patient search, registration, and dashboard.
-- **Clinical Dashboard**: Vitals, medications, and lab results visualization.
-- **Appointment Scheduling**: Calendar and list views for managing appointments.
+-   **Modern UI/UX**: Glassmorphism design, smooth animations, and a clean "Hospital" aesthetic.
+-   **Theme Support**: Built-in Light (default) and Dark modes with high-contrast visibility.
+-   **Modular Architecture**: Monorepo structure separating Core logic, UI Components, and the App Shell.
+-   **Real-time Data**: Integrated with the OpenMRS REST API.
 
-## Project Structure
+## 📦 Modules
 
-- `packages/core`: Core business logic, API clients, and types.
-- `packages/ui-components`: Reusable UI components (Button, Card, Table, etc.).
-- `packages/app-shell`: Main application shell and pages.
+### 1. Patient Management (`/patients`)
+-   **List View**: View all patients with search and filter capabilities.
+-   **Registration**: Register new patients with a comprehensive form (Demographics, Contact Info).
+-   **Details**: View detailed patient profiles including demographics and medical history.
 
-## Getting Started
+### 2. Clinical Dashboard (`/clinical`)
+-   **Vitals**: View and record patient vitals (Blood Pressure, Heart Rate, etc.).
+-   **Medications**: Track active medications and prescriptions.
+-   **Lab Results**: View recent laboratory test results.
+-   **Patient Context**: Select patients to view their specific clinical data.
+
+### 3. Appointments (`/appointments`)
+-   **Scheduling**: Book new appointments for patients.
+-   **Calendar**: View upcoming appointments (List view currently implemented).
+-   **Status Tracking**: Track appointment status (Scheduled, Completed, Cancelled).
+
+### 4. Authentication
+-   **Login**: Secure login using OpenMRS Basic Authentication.
+-   **Session Management**: Persistent sessions with auto-logout.
+
+## 🛠️ Tech Stack
+
+-   **Framework**: React 18
+-   **Build Tool**: Vite
+-   **Language**: TypeScript
+-   **Styling**: CSS Variables (Theming), CSS Modules
+-   **State Management**: React Context (Auth, Theme)
+-   **Package Manager**: NPM (Workspaces)
+
+## 🏁 Getting Started
 
 ### Prerequisites
-
-- Node.js (v16 or higher)
-- npm (v7 or higher)
+-   Node.js (v16 or higher)
+-   NPM (v7 or higher)
 
 ### Installation
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   ```
+1.  **Clone the repository:**
+    ```bash
+    git clone git@github.com:rishabhSony/OpenMRS.git
+    cd OpenMRS
+    ```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-### Development
+### Running the Application
 
-Start the development server:
+1.  **Build the shared packages first:**
+    ```bash
+    npm run build -w @openmrs-enterprise/core
+    npm run build -w @openmrs-enterprise/ui-components
+    ```
 
-```bash
-npm run dev
-```
+2.  **Start the development server:**
+    ```bash
+    npm run dev -w @openmrs-enterprise/app-shell
+    ```
 
-This will start the application at `http://localhost:5173`.
+3.  **Open in Browser:**
+    Navigate to [http://localhost:5173](http://localhost:5173).
 
-### Building
+## 🎨 Theme Customization
 
-Build all packages:
+The application uses CSS variables for theming. You can find the theme definitions in `packages/app-shell/src/index.css`.
 
-```bash
-npm run build
-```
+-   **Light Mode**: Default. Optimized for clinical environments (High brightness, clean look).
+-   **Dark Mode**: Optimized for low-light environments (High contrast, dark backgrounds).
 
-## Backend Integration
+Toggle the theme using the ☀️/🌙 button in the Login page or the Main Header.
 
-This frontend is designed to work with the OpenMRS REST API. Configure the API base URL in `packages/core/src/api/client.ts` or via environment variables.
+## 🔌 Backend Connection
 
-## License
+The application connects to the OpenMRS REST API.
 
-MIT
+-   **Default URL**: `https://demo.openmrs.org/openmrs/ws/rest/v1`
+-   **Configuration**: The API URL is configured in `packages/core/src/api/auth.ts`.
+-   **Environment Variables**: To customize the API URL, set `VITE_API_URL` in your `.env` file (Coming soon).
+
+## 🤝 Contributing
+
+1.  Fork the repository.
+2.  Create a feature branch (`git checkout -b feature/amazing-feature`).
+3.  Commit your changes (`git commit -m 'Add amazing feature'`).
+4.  Push to the branch (`git push origin feature/amazing-feature`).
+5.  Open a Pull Request.

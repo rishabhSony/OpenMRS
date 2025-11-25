@@ -1,7 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Shell, ToastProvider, Spinner } from '@openmrs-enterprise/ui-components';
 import type { NavItem } from '@openmrs-enterprise/ui-components';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { Login } from './pages/Login';
 import { Patients } from './pages/Patients';
 import { Clinical } from './pages/Clinical';
@@ -10,9 +12,8 @@ import { Reports } from './pages/Reports';
 import { Appointments } from './pages/Appointments';
 import './App.css';
 
-function ProtectedRoute({ children }: { children: JSX.Element }) {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
-    const location = useLocation();
 
     if (isLoading) {
         return (
@@ -23,33 +24,15 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
     }
 
     if (!isAuthenticated) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
+        return <Navigate to="/login" replace />;
     }
 
-    return children;
-}
+    return <>{children}</>;
+};
 
-function App() {
-    return (
-        <ToastProvider>
-            <AuthProvider>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/*" element={
-                            <ProtectedRoute>
-                                <AppContent />
-                            </ProtectedRoute>
-                        } />
-                    </Routes>
-                </BrowserRouter>
-            </AuthProvider>
-        </ToastProvider>
-    );
-}
-
-function AppContent() {
-    const { user, logout } = useAuth();
+const AppContent: React.FC = () => {
+    const { isAuthenticated, logout, user } = useAuth();
+    const { theme, toggleTheme } = useTheme();
 
     const navItems: NavItem[] = [
         { label: 'Dashboard', path: '/', icon: <span>📊</span> },
@@ -65,25 +48,80 @@ function AppContent() {
     };
 
     return (
-        <Shell
-            title="HMS"
-            subtitle="Hospital Management System"
-            logo={
-                <img src="/hms-logo.png" alt="HMS Logo" width="32" height="32" style={{ borderRadius: '8px' }} />
-            }
-            user={shellUser}
-            items={navItems}
-            onLogout={logout}
-        >
-            <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/patients" element={<Patients />} />
-                <Route path="/clinical" element={<Clinical />} />
-                <Route path="/appointments" element={<Appointments />} />
-                <Route path="/reports" element={<Reports />} />
-            </Routes>
-        </Shell>
+        <Routes>
+            <Route path="/login" element={
+                isAuthenticated ? <Navigate to="/" replace /> : <Login toggleTheme={toggleTheme} currentTheme={theme} />
+            } />
+
+            <Route path="/*" element={
+                <ProtectedRoute>
+                    <Shell
+                        title="HMS"
+                        subtitle="Hospital Management System"
+                        logo={
+                            <div style={{
+                                width: '32px',
+                                height: '32px',
+                                background: 'var(--color-primary)',
+                                borderRadius: '8px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: 'white',
+                                fontWeight: 'bold'
+                            }}>+</div>
+                        }
+                        user={shellUser}
+                        items={navItems}
+                        onLogout={logout}
+                        actions={
+                            <button
+                                onClick={toggleTheme}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontSize: '1.2rem',
+                                    padding: '0.5rem',
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: 'var(--color-text-primary)'
+                                }}
+                                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                            >
+                                {theme === 'light' ? '🌙' : '☀️'}
+                            </button>
+                        }
+                    >
+                        <Routes>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/patients" element={<Patients />} />
+                            <Route path="/clinical" element={<Clinical />} />
+                            <Route path="/appointments" element={<Appointments />} />
+                            <Route path="/reports" element={<Reports />} />
+                            <Route path="*" element={<Navigate to="/" replace />} />
+                        </Routes>
+                    </Shell>
+                </ProtectedRoute>
+            } />
+        </Routes>
     );
-}
+};
+
+const App: React.FC = () => {
+    return (
+        <ThemeProvider>
+            <AuthProvider>
+                <ToastProvider>
+                    <BrowserRouter>
+                        <AppContent />
+                    </BrowserRouter>
+                </ToastProvider>
+            </AuthProvider>
+        </ThemeProvider>
+    );
+};
 
 export default App;
