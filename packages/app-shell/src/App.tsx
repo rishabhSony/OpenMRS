@@ -9,14 +9,15 @@ import { Patients } from './pages/Patients';
 import { Clinical } from './pages/Clinical';
 import { Dashboard } from './pages/Dashboard';
 import { Reports } from './pages/Reports';
-import { Appointments } from './pages/Appointments';
 import { FormBuilderDemo } from './pages/FormBuilderDemo';
 import './App.css';
 
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-const Schedule = React.lazy(() => import('./pages/Schedule').then(module => ({ default: module.Schedule })));
+const Schedule = React.lazy(() => import('./pages/Schedule').then(m => ({ default: m.Schedule })));
+const Appointments = React.lazy(() => import('./pages/Appointments').then(m => ({ default: m.Appointments })));
+const ReportBuilder = React.lazy(() => import('./pages/ReportBuilder').then(m => ({ default: m.ReportBuilder })));
 
 
 interface AppNavItem extends NavItem {
@@ -66,7 +67,8 @@ const AppContent: React.FC = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 color: 'white',
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
+                                animation: 'none'
                             }}>+</div>
                         }
                         user={shellUser}
@@ -97,6 +99,7 @@ const AppContent: React.FC = () => {
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/patients" element={<Patients />} />
                             <Route path="/clinical" element={<Clinical />} />
+                            <Route path="/reports/builder" element={<ReportBuilder />} />
                             <Route path="/appointments" element={<Appointments />} />
                             <Route path="/schedule" element={<Schedule />} /> {/* Added Schedule route */}
                             <Route path="/reports" element={
