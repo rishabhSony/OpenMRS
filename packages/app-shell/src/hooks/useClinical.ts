@@ -28,22 +28,24 @@ export const useClinical = () => {
         setLoading(true);
         try {
             // Fetch Vitals (Observations)
-            // In a real app, we would filter by concept class "Diagnosis" or specific concept UUIDs
+            // Using a custom representation to get exactly what we need
+            const obsRep = 'custom:(uuid,obsDatetime,value,concept:(uuid,display,units),status)';
             const vitalsResponse = await client.get<{ results: Observation[] }>(
-                `/obs?patient=${patientUuid}&v=full&limit=10`
+                `/obs?patient=${patientUuid}&v=${obsRep}&limit=10`
             );
             setVitals(vitalsResponse.results || []);
 
             // Fetch Medications (Orders)
+            const orderRep = 'custom:(uuid,dateActivated,instructions,dosingInstructions,concept:(uuid,display),orderType:(uuid,name,display))';
             const medsResponse = await client.get<{ results: Order[] }>(
-                `/order?patient=${patientUuid}&v=full&type=drugorder&status=active`
+                `/order?patient=${patientUuid}&v=${orderRep}&type=drugorder&status=active`
             );
             setMedications(medsResponse.results || []);
 
-            // Fetch Labs (Encounters with type 'Lab Result' or similar)
-            // Assuming a standard encounter type for labs, or just fetching recent encounters
+            // Fetch Labs (Encounters)
+            const encRep = 'custom:(uuid,encounterDatetime,encounterType:(uuid,name,display),encounterProviders:(uuid,provider:(person:(display))))';
             const labsResponse = await client.get<{ results: Encounter[] }>(
-                `/encounter?patient=${patientUuid}&v=full&limit=5`
+                `/encounter?patient=${patientUuid}&v=${encRep}&limit=5`
             );
             setLabs(labsResponse.results || []);
 

@@ -79,7 +79,7 @@ export const Clinical: React.FC = () => {
                                 columns={[
                                     { key: 'date', header: 'Date', render: (obs: Observation) => new Date(obs.obsDatetime).toLocaleDateString() },
                                     { key: 'concept', header: 'Type', render: (obs: Observation) => obs.concept.display },
-                                    { key: 'value', header: 'Value', render: (obs: Observation) => `${obs.value}` }
+                                    { key: 'value', header: 'Value', render: (obs: Observation) => typeof obs.value === 'object' ? obs.value.display : `${obs.value}` }
                                 ]}
                                 data={vitals}
                                 isLoading={loading}

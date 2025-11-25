@@ -39,6 +39,27 @@ This walkthrough documents the successful integration of the OpenMRS frontend ap
 - **`Login.tsx` & `App.tsx`**: Added theme toggle buttons and integrated `ThemeProvider`.
 - **UI Improvements**: Fixed contrast issues (black on black) by ensuring all components use the new theme variables.
 
+### 5. Backend Integration & Proxy (New)
+- **CORS Fix**: Configured Vite proxy in `vite.config.ts` to forward `/openmrs` requests to `https://dev3.openmrs.org` (Demo server was unstable).
+- **API Configuration**: Updated `.env` and `main.tsx` to use the relative path `/openmrs/ws/rest/v1`, ensuring requests go through the proxy.
+- **Verification**: Confirmed server is running and serving the application.
+
+### 6. Full Backend Integration (New)
+- **Server**: Verified integration with `dev3.openmrs.org` (Latest OpenMRS + Bahmni modules).
+- **Patients**: Confirmed API compatibility for patient search and details.
+- **Clinical**: Verified Observation and Encounter data structures. Updated UI to handle coded concept values correctly.
+- **Appointments**: Identified usage of Bahmni Appointment Scheduling module and updated endpoints to `/appointments`.
+
+### 7. Reports Module (New)
+- **Visual Analytics**: Implemented a dashboard with `recharts`.
+- **Metrics**: Displays Total Patients, Active Visits, and Today's Appointments.
+- **Charts**:
+    - **Gender Distribution**: Pie chart showing patient demographics.
+    - **Weekly Appointments**: Bar chart showing appointment volume over the last 7 days.
+- **Data Integration**: Aggregates data from multiple API endpoints (`/patient`, `/visit`, `/appointments`).
+
+![Reports Dashboard](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/reports_dashboard_1764043130852.png)
+
 ## Verification Results
 
 ### Build Verification

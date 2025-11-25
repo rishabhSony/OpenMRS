@@ -7,5 +7,12 @@ export default defineConfig({
     server: {
         port: 5173,
         open: true,
+        proxy: {
+            '/openmrs': {
+                target: 'https://dev3.openmrs.org',
+                changeOrigin: true,
+                secure: false,
+            }
+        }
     },
 })

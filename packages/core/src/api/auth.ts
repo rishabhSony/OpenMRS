@@ -62,15 +62,19 @@ export class AuthService {
         this.client.setHeader('Authorization', `Basic ${token}`);
 
         try {
-            const response = await this.client.get<{ results: User[] }>('/session');
-            // Mock user for now since session endpoint returns session info, not user object directly in this structure
-            // In real OpenMRS, /session returns { authenticated: true, user: {...} }
+            // OpenMRS /session endpoint returns { authenticated: boolean, user: { ... } }
+            const response = await this.client.get<{ authenticated: boolean; user: any }>('/session');
 
+            if (!response.authenticated || !response.user) {
+                throw new Error('Authentication failed');
+            }
+
+            // Map OpenMRS user object to our User interface
             const user: User = {
-                id: 'user-uuid-1',
-                username: username,
-                personId: 'person-uuid-1',
-                roles: ['Provider']
+                id: response.user.uuid,
+                username: response.user.username || response.user.display,
+                personId: response.user.person.uuid,
+                roles: response.user.roles ? response.user.roles.map((r: any) => r.display) : []
             };
 
             this.session = {

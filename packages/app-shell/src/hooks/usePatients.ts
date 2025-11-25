@@ -26,13 +26,18 @@ export const usePatients = () => {
         setLoading(true);
         setError(null);
         try {
-            // In a real OpenMRS instance, we would use the /patient endpoint with 'q' parameter
-            // For now, we'll assume a standard REST endpoint structure
-            const endpoint = query ? `/patient?q=${query}&v=full` : '/patient?v=full';
+            // OpenMRS requires a query parameter for patient search
+            // If no query is provided, we won't fetch anything to avoid overloading
+            // In a real app, we might fetch a specific cohort or recent patients
+            if (!query) {
+                setPatients([]);
+                setLoading(false);
+                return;
+            }
+
+            const endpoint = `/patient?q=${query}&v=full`;
             const response = await client.get<{ results: Patient[] }>(endpoint);
 
-            // Map the API response to our internal Patient type if needed
-            // The core Patient type matches OpenMRS REST representation closely
             setPatients(response.results || []);
         } catch (err) {
             console.error('Failed to fetch patients:', err);

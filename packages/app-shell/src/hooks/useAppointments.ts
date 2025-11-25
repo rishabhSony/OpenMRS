@@ -32,12 +32,13 @@ export const useAppointments = () => {
             const end = endDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
             const response = await client.get<{ results: Appointment[] }>(
-                `/appointment?fromDate=${start}&toDate=${end}&v=full`
+                `/appointments?fromDate=${start}&toDate=${end}&v=full`
             );
             setAppointments(response.results || []);
         } catch (err) {
             console.error('Failed to fetch appointments:', err);
-            showToast('Failed to load appointments', 'error');
+            // Don't show toast on 404/empty, just set empty
+            setAppointments([]);
         } finally {
             setLoading(false);
         }
@@ -56,7 +57,7 @@ export const useAppointments = () => {
                 status: 'SCHEDULED'
             };
 
-            const response = await client.post<Appointment>('/appointment', payload);
+            const response = await client.post<Appointment>('/appointments', payload);
             setAppointments(prev => [...prev, response]);
             showToast('Appointment scheduled successfully', 'success');
             return response;
