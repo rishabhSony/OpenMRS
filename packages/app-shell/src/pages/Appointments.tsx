@@ -36,19 +36,26 @@ export const Appointments: React.FC = () => {
             patient: { uuid: 'patient-uuid-placeholder', display: newEntry.patientName } as any,
             encounterDatetime: newEntry.date.toISOString(),
             encounterType: { uuid: 'visit-note-uuid', display: 'Visit Note' } as any,
-            // Store the note content in an observation or just assume the encounter represents the log
-            obs: []
+            // Store the note content in an observation
+            obs: [
+                {
+                    concept: { uuid: 'concept-uuid-for-note', display: 'Visit Note' },
+                    value: newEntry.info
+                }
+            ]
         });
     };
 
     // Map encounters to DailyLogEntry format for the modal
-    const logs: DailyLogEntry[] = encounters.map(enc => ({
-        id: enc.uuid,
-        patientName: enc.patient.display,
-        info: 'Visit Note', // In real app, extract from obs
-        date: new Date(enc.encounterDatetime),
-        timestamp: new Date(enc.encounterDatetime)
-    }));
+    const logs: DailyLogEntry[] = encounters
+        .filter(enc => enc && enc.encounterDatetime) // Filter out invalid encounters
+        .map(enc => ({
+            id: enc.uuid,
+            patientName: enc.patient?.display || 'Unknown Patient',
+            info: enc.obs?.[0]?.value || 'Visit Note', // Extract note from first obs if available
+            date: new Date(enc.encounterDatetime),
+            timestamp: new Date(enc.encounterDatetime)
+        }));
 
     // Convert logs to calendar events for visualization
     const getCalendarEvents = (): CalendarEvent[] => {
