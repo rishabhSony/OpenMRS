@@ -21,12 +21,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             .filter(Boolean)
             .join(' ');
 
+        const inputId = props.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+
         return (
             <div className={`hms-input-wrapper ${fullWidth ? 'hms-input-wrapper--full-width' : ''}`}>
-                {label && <label className="hms-input__label">{label}</label>}
+                {label && <label htmlFor={inputId} className="hms-input__label">{label}</label>}
                 <div className="hms-input__container">
                     {icon && <span className="hms-input__icon">{icon}</span>}
-                    <input ref={ref} className={inputClasses} {...props} />
+                    <input ref={ref} id={inputId} className={inputClasses} {...props} />
                 </div>
                 {error && <span className="hms-input__error">{error}</span>}
                 {helperText && !error && <span className="hms-input__helper">{helperText}</span>}

@@ -1,0 +1,29 @@
+.language-switcher {
+    display: inline-block;
+}
+
+.language-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.language-select:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.language-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(103, 126, 234, 0.1);
+}
+
+.language-select option {
+    padding: 0.5rem;
+}

@@ -8,7 +8,7 @@ This document outlines the strategic plan for future enhancements to the OpenMRS
 - [x] **Session Timeout**: Auto-logout users after 15 minutes of inactivity to protect patient data.
 
 ## 2. Offline & Low-Resource Optimization
-- [ ] **Progressive Web App (PWA)**: Configure Vite PWA plugin to allow the app to be installed on devices and load offline.
+- [x] **Progressive Web App (PWA)**: Configure Vite PWA plugin to allow the app to be installed on devices and load offline.
 - [ ] **Offline Data Sync**: Implement a local database (e.g., RxDB or PouchDB) to cache patient data and sync changes when the connection is restored.
 - [ ] **Image Optimization**: Compress and lazy-load images to reduce bandwidth usage.
 
@@ -28,15 +28,15 @@ This document outlines the strategic plan for future enhancements to the OpenMRS
 
 ### 3.3 Vitals & Biometrics Module
 **Goal**: Capture and visualize patient health trends.
-- [ ] **Step 1: Data Model**: Define the Observation (Obs) structure for common vitals (BP, Heart Rate, Temp).
-- [ ] **Step 2: Entry Form**: Create a specialized form for quick vitals entry during a visit.
-- [ ] **Step 3: Visualization**: Use `recharts` to plot vitals over time, allowing clinicians to spot trends at a glance.
+- [x] **Step 1: Data Model**: Define the Observation (Obs) structure for common vitals (BP, Heart Rate, Temp).
+- [x] **Step 2: Entry Form**: Create a specialized form for quick vitals entry during a visit.
+- [x] **Step 3: Visualization**: Use `recharts` to plot vitals over time, allowing clinicians to spot trends at a glance.
 
 ## 4. Technical Excellence & Quality Assurance
-- [ ] **End-to-End (E2E) Testing**: Implement Playwright or Cypress tests to automate critical user flows (Login -> Register Patient -> Start Visit).
-- [ ] **Global Error Boundary**: Add a React Error Boundary to catch unhandled UI errors and display a friendly fallback UI instead of crashing the white screen.
-- [ ] **Internationalization (i18n)**: Set up `react-i18next` to support multiple languages, essential for global clinic deployments.
-- [ ] **CI/CD Pipeline**: Set up GitHub Actions to automatically run tests and linting on every push.
+- [x] **Global Error Boundary**: Add a React Error Boundary to catch unhandled UI errors and display a friendly fallback UI instead of crashing the white screen.
+- [/] **End-to-End (E2E) Testing**: Implement Playwright tests to automate critical user flows (Login -> Register Patient -> Start Visit).
+- [x] **Internationalization (i18n)**: Set up `react-i18next` to support multiple languages, essential for global clinic deployments.
+- [/] **CI/CD Pipeline**: Set up GitHub Actions to automatically run tests and linting on every push.
 
 ## 5. UI/UX Refinements
 - [ ] **Dark/Light Mode Toggle**: Fully support system-preference based theming.

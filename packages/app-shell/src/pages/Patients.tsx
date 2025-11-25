@@ -47,24 +47,28 @@ const PatientRegistrationForm: React.FC<{ onSubmit: (data: any) => void; onCance
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                 <Input
+                    id="firstName"
                     label="First Name *"
                     required
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                 />
                 <Input
+                    id="lastName"
                     label="Last Name *"
                     required
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                 />
                 <DatePicker
+                    id="dateOfBirth"
                     label="Date of Birth *"
                     required
                     value={formData.dateOfBirth}
                     onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
                 />
                 <Select
+                    id="gender"
                     label="Gender *"
                     options={[
                         { value: 'Male', label: 'Male' },
@@ -75,12 +79,14 @@ const PatientRegistrationForm: React.FC<{ onSubmit: (data: any) => void; onCance
                     onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                 />
                 <Input
+                    id="phone"
                     label="Phone *"
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 />
                 <Input
+                    id="email"
                     label="Email"
                     type="email"
                     value={formData.email}
@@ -89,6 +95,7 @@ const PatientRegistrationForm: React.FC<{ onSubmit: (data: any) => void; onCance
             </div>
 
             <Input
+                id="address"
                 label="Address *"
                 required
                 value={formData.address}
@@ -97,18 +104,21 @@ const PatientRegistrationForm: React.FC<{ onSubmit: (data: any) => void; onCance
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem' }}>
                 <Input
+                    id="city"
                     label="City *"
                     required
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 />
                 <Input
+                    id="state"
                     label="State *"
                     required
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                 />
                 <Input
+                    id="zipCode"
                     label="Zip Code *"
                     required
                     value={formData.zipCode}

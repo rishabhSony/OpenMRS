@@ -14,6 +14,7 @@ import { FormBuilderDemo } from './pages/FormBuilderDemo';
 import './App.css';
 
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 interface AppNavItem extends NavItem {
     roles?: string[];
@@ -118,17 +119,19 @@ import { queryClient, persister } from './lib/queryClient';
 
 const App: React.FC = () => {
     return (
-        <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-            <ThemeProvider>
-                <AuthProvider>
-                    <ToastProvider>
-                        <BrowserRouter>
-                            <AppContent />
-                        </BrowserRouter>
-                    </ToastProvider>
-                </AuthProvider>
-            </ThemeProvider>
-        </PersistQueryClientProvider>
+        <ErrorBoundary>
+            <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+                <ThemeProvider>
+                    <AuthProvider>
+                        <ToastProvider>
+                            <BrowserRouter>
+                                <AppContent />
+                            </BrowserRouter>
+                        </ToastProvider>
+                    </AuthProvider>
+                </ThemeProvider>
+            </PersistQueryClientProvider>
+        </ErrorBoundary>
     );
 };
 

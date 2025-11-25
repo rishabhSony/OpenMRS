@@ -13,10 +13,14 @@ export default defineConfig(({ mode }) => {
                 registerType: 'autoUpdate',
                 includeAssets: ['hms-logo.png'],
                 manifest: {
-                    name: 'OpenMRS Enterprise HMS',
+                    name: 'Hospital Management System',
                     short_name: 'HMS',
-                    description: 'Hospital Management System for Low-Resource Settings',
-                    theme_color: '#ffffff',
+                    description: 'OpenMRS Enterprise Hospital Management System for Healthcare',
+                    theme_color: '#667eea',
+                    background_color: '#ffffff',
+                    display: 'standalone',
+                    scope: '/',
+                    start_url: '/',
                     icons: [
                         {
                             src: 'hms-logo.png',
@@ -26,7 +30,36 @@ export default defineConfig(({ mode }) => {
                         {
                             src: 'hms-logo.png',
                             sizes: '512x512',
-                            type: 'image/png'
+                            type: 'image/png',
+                            purpose: 'any maskable'
+                        }
+                    ]
+                },
+                workbox: {
+                    globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+                    runtimeCaching: [
+                        {
+                            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+                            handler: 'CacheFirst',
+                            options: {
+                                cacheName: 'google-fonts-cache',
+                                expiration: {
+                                    maxEntries: 10,
+                                    maxAgeSeconds: 60 * 60 * 24 * 365
+                                }
+                            }
+                        },
+                        {
+                            urlPattern: /\/openmrs\/ws\/rest\/.*/i,
+                            handler: 'NetworkFirst',
+                            options: {
+                                cacheName: 'api-cache',
+                                expiration: {
+                                    maxEntries: 50,
+                                    maxAgeSeconds: 60 * 5
+                                },
+                                networkTimeoutSeconds: 10
+                            }
                         }
                     ]
                 }

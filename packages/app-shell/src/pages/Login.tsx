@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Input, Button, Spinner } from '@openmrs-enterprise/ui-components';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import './Login.css';
 
 interface LoginProps {
@@ -10,6 +12,7 @@ interface LoginProps {
 }
 
 export const Login: React.FC<LoginProps> = ({ toggleTheme, currentTheme }) => {
+    const { t } = useTranslation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -26,7 +29,7 @@ export const Login: React.FC<LoginProps> = ({ toggleTheme, currentTheme }) => {
             await login(username, password);
             navigate('/');
         } catch (err) {
-            setError('Invalid username or password');
+            setError(t('auth.loginError'));
         } finally {
             setIsLoading(false);
         }
@@ -58,65 +61,37 @@ export const Login: React.FC<LoginProps> = ({ toggleTheme, currentTheme }) => {
                     {currentTheme === 'light' ? '🌙' : '☀️'}
                 </button>
             )}
-            <div className="login-content">
+
+            <div className="login-box">
                 <div className="login-header">
-                    <div className="logo-placeholder" style={{
-                        width: '64px',
-                        height: '64px',
-                        background: 'var(--color-primary)',
-                        borderRadius: '12px',
-                        margin: '0 auto 1rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '2rem',
-                        fontWeight: 'bold'
-                    }}>
-                        +
-                    </div>
-                    <h1>Hospital Management</h1>
-                    <p>Sign in to access your dashboard</p>
+                    <div className="logo">🏥</div>
+                    <h1>{t('auth.loginTitle')}</h1>
+                    <p>{t('auth.loginSubtitle')}</p>
                 </div>
 
-                <Card className="login-card">
-                    <form onSubmit={handleSubmit}>
-                        {error && (
-                            <div style={{
-                                background: 'rgba(255, 61, 0, 0.1)',
-                                color: 'var(--color-error)',
-                                padding: '0.75rem',
-                                borderRadius: 'var(--radius-md)',
-                                marginBottom: '1rem',
-                                fontSize: '0.875rem',
-                                textAlign: 'center'
-                            }}>
-                                {error}
-                            </div>
-                        )}
+                <Card>
+                    <form onSubmit={handleSubmit} className="login-form">
+                        {error && <div className="error-message">{error}</div>}
 
-                        <div className="form-group">
-                            <Input
-                                label="Username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Enter your username"
-                                required
-                                disabled={isLoading}
-                            />
-                        </div>
+                        <Input
+                            id="username"
+                            label={t('auth.username')}
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            disabled={isLoading}
+                        />
 
-                        <div className="form-group">
-                            <Input
-                                label="Password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter your password"
-                                required
-                                disabled={isLoading}
-                            />
-                        </div>
+                        <Input
+                            id="password"
+                            label={t('auth.password')}
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            disabled={isLoading}
+                        />
 
                         <Button
                             type="submit"
@@ -124,14 +99,25 @@ export const Login: React.FC<LoginProps> = ({ toggleTheme, currentTheme }) => {
                             fullWidth
                             disabled={isLoading}
                         >
-                            {isLoading ? <Spinner size="sm" /> : 'Sign In'}
+                            {isLoading ? (
+                                <>
+                                    <Spinner size="sm" />
+                                    <span style={{ marginLeft: '0.5rem' }}>{t('auth.loggingIn')}</span>
+                                </>
+                            ) : t('auth.loginButton')}
                         </Button>
                     </form>
                 </Card>
 
                 <div className="login-footer">
-                    <p>© 2023 OpenMRS Enterprise. All rights reserved.</p>
+                    <LanguageSwitcher />
                 </div>
+            </div>
+
+            <div className="login-background">
+                <div className="blob blob-1"></div>
+                <div className="blob blob-2"></div>
+                <div className="blob blob-3"></div>
             </div>
         </div>
     );

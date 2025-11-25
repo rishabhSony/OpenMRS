@@ -29,16 +29,23 @@ A modern, high-performance frontend for OpenMRS, built with React, TypeScript, a
 -   **Scheduling**: Book new appointments with date/time selection.
 
 ### 4. Reports & Analytics (`/reports`)
--   **Visual Analytics**: Charts and graphs for hospital metrics.
--   **Patient Statistics**: Gender distribution, age demographics.
--   **Appointment Metrics**: Daily/weekly appointment volumes.
--   **RBAC Protected**: Restricted to System Developer role.
+-   **Visual Analytics**: Interactive charts for hospital metrics.
+-   **Patient Demographics**: Age and gender distribution charts.
+-   **Clinical Metrics**: Top diagnoses and registration trends.
+-   **Geographic Data**: Patient distribution by state.
+-   **Synthetic Data**: Realistic Indian patient data for demonstration.
+-   **RBAC Protected**: Restricted to Doctor/Admin roles.
 
 ### 5. Security & Authentication
 -   **Cookie-Based Auth**: Secure `JSESSIONID` cookie management via Vite Proxy.
 -   **Session Timeout**: Auto-logout after 15 minutes of inactivity.
--   **RBAC**: Role-Based Access Control restricting sensitive areas to authorized roles.
+-   **Enhanced RBAC**: Granular permissions for Receptionist, Nurse, and Doctor roles.
 -   **Protected Routes**: Route-level security with role validation.
+
+### 6. Internationalization (i18n)
+-   **Multi-Language**: Full support for English (🇺🇸) and Hindi (🇮🇳).
+-   **Language Switcher**: Easy toggling between languages.
+-   **Persistence**: Language preference saved to local storage.
 
 ### 6. Offline & Optimization
 -   **PWA**: Installable Progressive Web App with asset caching.
