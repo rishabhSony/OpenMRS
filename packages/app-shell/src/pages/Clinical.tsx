@@ -31,7 +31,7 @@ export const Clinical: React.FC = () => {
 
     // Initial fetch of patients for the dropdown
     useEffect(() => {
-        fetchPatients();
+        fetchPatients('');
     }, [fetchPatients]);
 
     const handlePatientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

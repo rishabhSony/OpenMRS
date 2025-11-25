@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Button, Calendar, CalendarEvent } from '@openmrs-enterprise/ui-components';
+import { Card, Button, Calendar } from '@openmrs-enterprise/ui-components';
+import type { CalendarEvent } from '@openmrs-enterprise/ui-components';
 import moment from 'moment';
 
 export const Appointments: React.FC = () => {
