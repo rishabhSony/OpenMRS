@@ -10,6 +10,7 @@ import { Clinical } from './pages/Clinical';
 import { Dashboard } from './pages/Dashboard';
 import { Reports } from './pages/Reports';
 import { Appointments } from './pages/Appointments';
+import { FormBuilderDemo } from './pages/FormBuilderDemo';
 import './App.css';
 
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -96,6 +97,11 @@ const AppContent: React.FC = () => {
                             <Route path="/reports" element={
                                 <ProtectedRoute allowedRoles={['System Developer']}>
                                     <Reports />
+                                </ProtectedRoute>
+                            } />
+                            <Route path="/form-builder" element={
+                                <ProtectedRoute allowedRoles={['System Developer']}>
+                                    <FormBuilderDemo />
                                 </ProtectedRoute>
                             } />
                             <Route path="*" element={<Navigate to="/" replace />} />

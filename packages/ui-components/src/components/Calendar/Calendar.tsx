@@ -1,29 +1,48 @@
 import React from 'react';
-import './Calendar.css';
+import { Calendar as BigCalendar, momentLocalizer, View, Views } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+// Setup the localizer by providing the moment Object
+const localizer = momentLocalizer(moment);
 
 export interface CalendarEvent {
-    date: Date;
+    id: string;
     title: string;
-    type?: 'primary' | 'success' | 'warning' | 'error';
+    start: Date;
+    end: Date;
+    resource?: any;
 }
 
 export interface CalendarProps {
-    value: Date;
-    onChange: (date: Date) => void;
-    events?: CalendarEvent[];
+    events: CalendarEvent[];
+    onSelectEvent?: (event: CalendarEvent) => void;
+    onSelectSlot?: (slotInfo: { start: Date; end: Date }) => void;
+    defaultView?: View;
+    height?: number | string;
 }
 
-export const Calendar: React.FC<CalendarProps> = ({ value, onChange, events = [] }) => {
+export const Calendar: React.FC<CalendarProps> = ({
+    events,
+    onSelectEvent,
+    onSelectSlot,
+    defaultView = Views.MONTH,
+    height = 600
+}) => {
     return (
-        <div className="hms-calendar">
-            <div className="hms-calendar-header">
-                <h3>{value.toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>
-            </div>
-            <div className="hms-calendar-body">
-                <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--color-text-muted)' }}>
-                    Calendar View Placeholder
-                </p>
-            </div>
+        <div style={{ height, background: 'white', padding: '1rem', borderRadius: '8px' }}>
+            <BigCalendar
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: '100%' }}
+                onSelectEvent={onSelectEvent}
+                onSelectSlot={onSelectSlot}
+                selectable
+                defaultView={defaultView}
+                views={[Views.MONTH, Views.WEEK, Views.DAY]}
+            />
         </div>
     );
 };

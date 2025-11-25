@@ -12,10 +12,25 @@ This document outlines the strategic plan for future enhancements to the OpenMRS
 - [ ] **Offline Data Sync**: Implement a local database (e.g., RxDB or PouchDB) to cache patient data and sync changes when the connection is restored.
 - [ ] **Image Optimization**: Compress and lazy-load images to reduce bandwidth usage.
 
-## 3. Advanced Features
-- [ ] **Dynamic Form Builder**: Replace the hardcoded Patient Registration form with a schema-driven form builder that renders fields based on OpenMRS configuration (allowing custom attributes without code changes).
-- [ ] **Appointment Scheduling UI**: Enhance the appointment creation flow with a calendar view and conflict detection (visualizing the API errors we saw).
-- [ ] **Vitals & Biometrics**: Add a dedicated module for capturing and visualizing patient vitals over time.
+## 3. Advanced Features Implementation Plan
+### 3.1 Dynamic Form Builder
+**Goal**: Replace hardcoded forms with a flexible, schema-driven engine.
+- [x] **Step 1: Schema Design**: Define a JSON schema for form definitions (fields, types, validation rules).
+- [x] **Step 2: Form Engine**: Build a React component that takes the schema and renders the corresponding UI inputs.
+- [ ] **Step 3: Integration**: Connect the engine to the OpenMRS Form module API to fetch form definitions dynamically.
+
+### 3.2 Appointment Scheduling UI
+**Goal**: Visual calendar interface with conflict management.
+- [x] **Step 1: Calendar Integration**: Integrate `react-big-calendar` or `FullCalendar` for day/week/month views.
+- [x] **Step 2: Conflict Detection**: Implement logic to check for overlapping appointments before submission.
+- [ ] **Step 3: Error Handling**: Display clear, user-friendly error messages when the API rejects a booking due to conflicts.
+- [ ] **Step 4: Styling & UX**: Improve calendar visibility and styling for better user experience.
+
+### 3.3 Vitals & Biometrics Module
+**Goal**: Capture and visualize patient health trends.
+- [ ] **Step 1: Data Model**: Define the Observation (Obs) structure for common vitals (BP, Heart Rate, Temp).
+- [ ] **Step 2: Entry Form**: Create a specialized form for quick vitals entry during a visit.
+- [ ] **Step 3: Visualization**: Use `recharts` to plot vitals over time, allowing clinicians to spot trends at a glance.
 
 ## 4. Technical Excellence & Quality Assurance
 - [ ] **End-to-End (E2E) Testing**: Implement Playwright or Cypress tests to automate critical user flows (Login -> Register Patient -> Start Visit).
