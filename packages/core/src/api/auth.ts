@@ -16,6 +16,9 @@ export class AuthService {
     private client: ApiClient;
     private session: Session | null = null;
     private readonly STORAGE_KEY = 'hms_session';
+    private readonly TIMEOUT_MS = 10 * 1000; // 10 seconds for testing
+    private lastActivity: number = Date.now();
+    private timeoutInterval: any = null;
 
     private constructor() {
         // Initialize with default URL (can be overridden by configure)
@@ -44,12 +47,27 @@ export class AuthService {
                 this.session = JSON.parse(stored);
                 if (this.session?.token) {
                     this.client.setHeader('Authorization', `Basic ${this.session.token}`);
+                    this.startInactivityTimer();
                 }
             } catch (e) {
                 console.error('Failed to parse session', e);
                 localStorage.removeItem(this.STORAGE_KEY);
             }
         }
+    }
+
+    private listeners: ((user: User | null) => void)[] = [];
+
+    public subscribe(listener: (user: User | null) => void): () => void {
+        this.listeners.push(listener);
+        return () => {
+            this.listeners = this.listeners.filter(l => l !== listener);
+        };
+    }
+
+    private notifyListeners() {
+        const user = this.getUser();
+        this.listeners.forEach(listener => listener(user));
     }
 
     /**
@@ -84,6 +102,8 @@ export class AuthService {
             };
 
             this.saveSession();
+            this.startInactivityTimer();
+            this.notifyListeners();
             return user;
         } catch (error) {
             this.client.setHeader('Authorization', '');
@@ -92,9 +112,11 @@ export class AuthService {
     }
 
     public logout() {
+        this.stopInactivityTimer();
         this.session = null;
         this.client.setHeader('Authorization', '');
         localStorage.removeItem(this.STORAGE_KEY);
+        this.notifyListeners();
         window.location.href = '/login';
     }
 
@@ -114,6 +136,49 @@ export class AuthService {
 
     public getClient(): ApiClient {
         return this.client;
+    }
+
+    // --- Session Timeout Logic ---
+
+    private startInactivityTimer() {
+        this.stopInactivityTimer(); // Clear existing if any
+        this.lastActivity = Date.now();
+
+        // Listen for activity
+        window.addEventListener('mousemove', this.resetTimer);
+        window.addEventListener('keydown', this.resetTimer);
+        window.addEventListener('click', this.resetTimer);
+        window.addEventListener('scroll', this.resetTimer);
+
+        // Check for timeout every minute
+        this.timeoutInterval = setInterval(() => {
+            this.checkTimeout();
+        }, 60 * 1000);
+    }
+
+    private stopInactivityTimer() {
+        if (this.timeoutInterval) {
+            clearInterval(this.timeoutInterval);
+            this.timeoutInterval = null;
+        }
+        window.removeEventListener('mousemove', this.resetTimer);
+        window.removeEventListener('keydown', this.resetTimer);
+        window.removeEventListener('click', this.resetTimer);
+        window.removeEventListener('scroll', this.resetTimer);
+    }
+
+    private resetTimer = () => {
+        this.lastActivity = Date.now();
+    }
+
+    private checkTimeout() {
+        if (!this.isAuthenticated()) return;
+
+        const now = Date.now();
+        if (now - this.lastActivity > this.TIMEOUT_MS) {
+            console.warn('Session timed out due to inactivity');
+            this.logout();
+        }
     }
 }
 

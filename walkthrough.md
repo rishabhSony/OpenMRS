@@ -69,11 +69,21 @@ This walkthrough documents the successful integration of the OpenMRS frontend ap
 - **Testing**: Added `vitest` and unit tests for `usePatients` hook.
 
 - **Bug Fixes**:
-    - **Reports Page**: Fixed "failed to load report" error by correctly handling array responses from the `/appointments` endpoint.
+    - **Reports Page**: Fixed "failed to load report" error by correctly handling array responses from `/appointments` and implementing robust error handling for `/patient` and `/visit` endpoints (preventing crashes when API limits fail).
     - **Patient List**: Fixed empty patient list issue by fetching recent patients from active visits when no search query is provided.
 
-![Reports Page Fixed](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/reports_page_after_fix_1764045327290.png)
+![Reports Page Fixed (Robust)](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/reports_after_robust_fix_correct_1764045824186.png)
 ![Patient List Populated](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/patient_list_final_1764045599873.png)
+
+### 10. Future Roadmap (New)
+- Created `ROADMAP.md` outlining strategic enhancements for security, offline support, and advanced features to guide future development.
+
+### 11. Security Enhancements (New)
+- **Session Timeout**: Implemented auto-logout after 15 minutes of inactivity.
+- **RBAC**: Restricted "Reports" page to users with "System Developer" role.
+
+![RBAC Denied (Dashboard)](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/rbac_dashboard_denied_1764046812944.png)
+![RBAC Allowed (Reports)](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/rbac_reports_allowed_1764046957902.png)
 
 ## Verification Results
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Shell, ToastProvider, Spinner } from '@openmrs-enterprise/ui-components';
+import { Shell, ToastProvider } from '@openmrs-enterprise/ui-components';
 import type { NavItem } from '@openmrs-enterprise/ui-components';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
@@ -12,35 +12,28 @@ import { Reports } from './pages/Reports';
 import { Appointments } from './pages/Appointments';
 import './App.css';
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { isAuthenticated, isLoading } = useAuth();
+import { ProtectedRoute } from './components/ProtectedRoute';
 
-    if (isLoading) {
-        return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <Spinner size="lg" />
-            </div>
-        );
-    }
-
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
-    }
-
-    return <>{children}</>;
-};
+interface AppNavItem extends NavItem {
+    roles?: string[];
+}
 
 const AppContent: React.FC = () => {
     const { isAuthenticated, logout, user } = useAuth();
     const { theme, toggleTheme } = useTheme();
 
-    const navItems: NavItem[] = [
+    const allNavItems: AppNavItem[] = [
         { label: 'Dashboard', path: '/', icon: <span>📊</span> },
         { label: 'Patients', path: '/patients', icon: <span>📋</span> },
         { label: 'Clinical', path: '/clinical', icon: <span>🏥</span> },
         { label: 'Appointments', path: '/appointments', icon: <span>📅</span> },
-        { label: 'Reports', path: '/reports', icon: <span>📈</span> },
+        { label: 'Reports', path: '/reports', icon: <span>📈</span>, roles: ['System Developer'] },
     ];
+
+    const navItems = allNavItems.filter(item => {
+        if (!item.roles) return true;
+        return user?.roles.some(role => item.roles!.includes(role));
+    });
 
     const shellUser = {
         name: user?.username || 'User',
@@ -100,7 +93,11 @@ const AppContent: React.FC = () => {
                             <Route path="/patients" element={<Patients />} />
                             <Route path="/clinical" element={<Clinical />} />
                             <Route path="/appointments" element={<Appointments />} />
-                            <Route path="/reports" element={<Reports />} />
+                            <Route path="/reports" element={
+                                <ProtectedRoute allowedRoles={['System Developer']}>
+                                    <Reports />
+                                </ProtectedRoute>
+                            } />
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </Shell>

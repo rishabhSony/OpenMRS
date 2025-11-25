@@ -22,6 +22,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUser(user);
         }
         setIsLoading(false);
+
+        // Subscribe to auth changes (e.g. timeout logout)
+        const unsubscribe = authService.subscribe((updatedUser) => {
+            setUser(updatedUser);
+        });
+
+        return () => {
+            unsubscribe();
+        };
     }, []);
 
     const login = async (username: string, password: string) => {
