@@ -27,9 +27,16 @@ A modern, high-performance frontend for OpenMRS, built with React, TypeScript, a
 -   **Calendar**: View upcoming appointments (List view currently implemented).
 -   **Status Tracking**: Track appointment status (Scheduled, Completed, Cancelled).
 
-### 4. Authentication
--   **Login**: Secure login using OpenMRS Basic Authentication.
--   **Session Management**: Persistent sessions with auto-logout.
+### 4. Security & Authentication
+-   **Login**: Secure login using OpenMRS Basic Authentication (Initial) -> Cookie-based Session (Current).
+-   **Session Management**: Persistent sessions with auto-logout after 15 minutes of inactivity.
+-   **RBAC**: Role-Based Access Control restricting sensitive areas (e.g., Reports) to authorized roles.
+-   **Cookie-Based Auth**: Secure `JSESSIONID` cookie management via Vite Proxy.
+
+### 5. Offline & Optimization
+-   **PWA**: Installable Progressive Web App with asset caching.
+-   **Offline Sync**: `TanStack Query` with `localStorage` persistence allows viewing patient data without an internet connection.
+-   **Optimized**: Efficient asset loading and caching strategies.
 
 ## 🛠️ Tech Stack
 
@@ -88,9 +95,9 @@ Toggle the theme using the ☀️/🌙 button in the Login page or the Main Head
 
 The application connects to the OpenMRS REST API.
 
--   **Default URL**: `https://demo.openmrs.org/openmrs/ws/rest/v1`
--   **Configuration**: The API URL is configured in `packages/core/src/api/auth.ts`.
--   **Environment Variables**: To customize the API URL, set `VITE_API_URL` in your `.env` file (Coming soon).
+-   **Default URL**: `https://dev3.openmrs.org/openmrs/ws/rest/v1` (Proxied via `/openmrs` locally)
+-   **Configuration**: The API URL is configured in `packages/app-shell/vite.config.ts` (Proxy) and `packages/core/src/api/auth.ts`.
+-   **Environment Variables**: Set `VITE_OPENMRS_API_URL` to override the backend URL.
 
 ## 🤝 Contributing
 

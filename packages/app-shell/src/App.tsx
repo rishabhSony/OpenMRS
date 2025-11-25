@@ -107,17 +107,22 @@ const AppContent: React.FC = () => {
     );
 };
 
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { queryClient, persister } from './lib/queryClient';
+
 const App: React.FC = () => {
     return (
-        <ThemeProvider>
-            <AuthProvider>
-                <ToastProvider>
-                    <BrowserRouter>
-                        <AppContent />
-                    </BrowserRouter>
-                </ToastProvider>
-            </AuthProvider>
-        </ThemeProvider>
+        <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+            <ThemeProvider>
+                <AuthProvider>
+                    <ToastProvider>
+                        <BrowserRouter>
+                            <AppContent />
+                        </BrowserRouter>
+                    </ToastProvider>
+                </AuthProvider>
+            </ThemeProvider>
+        </PersistQueryClientProvider>
     );
 };
 

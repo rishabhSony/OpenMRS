@@ -17,11 +17,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const user = authService.getUser();
-        if (user) {
-            setUser(user);
-        }
-        setIsLoading(false);
+        const initAuth = async () => {
+            try {
+                const user = await authService.init();
+                if (user) {
+                    setUser(user);
+                }
+            } catch (error) {
+                console.error('Auth initialization failed', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        initAuth();
 
         // Subscribe to auth changes (e.g. timeout logout)
         const unsubscribe = authService.subscribe((updatedUser) => {

@@ -23,7 +23,6 @@ export class AuthService {
     private constructor() {
         // Use relative path to go through Vite proxy
         this.client = new ApiClient({ baseUrl: '/openmrs/ws/rest/v1' });
-        this.loadSession();
     }
 
     /**
@@ -34,6 +33,11 @@ export class AuthService {
             AuthService.instance = new AuthService();
         }
         return AuthService.instance;
+    }
+
+    public async init(): Promise<User | null> {
+        await this.loadSession();
+        return this.getUser();
     }
 
     public configure(config: { baseUrl: string }) {
