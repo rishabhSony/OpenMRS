@@ -79,3 +79,15 @@ export interface Encounter {
     provider: string;
     notes?: string;
 }
+
+export interface Appointment {
+    id: string;
+    patientId: string;
+    patientName: string;
+    date: string;
+    time: string;
+    type: string;
+    provider: string;
+    status: 'Scheduled' | 'Completed' | 'Cancelled' | 'No Show';
+    notes?: string;
+}

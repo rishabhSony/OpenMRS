@@ -199,3 +199,45 @@ export interface PagedResponse<T> extends ApiResponse<T> {
     limit: number;
     startIndex: number;
 }
+
+export interface User {
+    id: string;
+    username: string;
+    personId: string;
+    roles: string[];
+}
+
+export interface Appointment {
+    uuid: string;
+    display?: string;
+    startDateTime: string;
+    endDateTime: string;
+    appointmentType: {
+        uuid: string;
+        display: string;
+        name: string;
+    };
+    status: 'SCHEDULED' | 'CHECKED_IN' | 'COMPLETED' | 'CANCELLED' | 'MISSED';
+    patient: {
+        uuid: string;
+        display: string;
+        person: {
+            display: string;
+        };
+        identifiers: Array<{
+            identifier: string;
+        }>;
+    };
+    provider?: {
+        uuid: string;
+        display: string;
+        person: {
+            display: string;
+        };
+    };
+    location?: {
+        uuid: string;
+        display: string;
+        name: string;
+    };
+}

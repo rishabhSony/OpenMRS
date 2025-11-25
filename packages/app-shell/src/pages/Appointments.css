@@ -1,0 +1,93 @@
+.appointments-page {
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--color-surface);
+    padding: 0.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+}
+
+.appointments-content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+}
+
+.calendar-sidebar {
+    position: sticky;
+    top: 2rem;
+}
+
+.calendar-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.appointments-list {
+    flex: 1;
+}
+
+.calendar-view-placeholder {
+    padding: 4rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    background: var(--color-background);
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--color-border);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.appointment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 1024px) {
+    .appointments-content {
+        grid-template-columns: 1fr;
+    }
+
+    .calendar-sidebar {
+        position: static;
+    }
+}

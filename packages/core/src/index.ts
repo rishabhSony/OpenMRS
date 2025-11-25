@@ -8,6 +8,8 @@ export * from './types';
 
 // API Client
 export * from './api/client';
+export * from './api/auth';
+export * from './types';
 
 // Utilities
 export * from './utils';

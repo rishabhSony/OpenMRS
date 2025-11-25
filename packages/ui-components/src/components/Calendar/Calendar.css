@@ -1,0 +1,11 @@
+.hms-calendar {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.hms-calendar-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    text-align: center;
+}

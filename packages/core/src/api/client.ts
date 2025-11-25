@@ -18,6 +18,13 @@ export class ApiClient {
         };
     }
 
+    public setHeaders(headers: Record<string, string>) {
+        this.config.headers = {
+            ...this.config.headers,
+            ...headers,
+        };
+    }
+
     private async request<T>(
         endpoint: string,
         options: RequestInit = {}
@@ -30,13 +37,31 @@ export class ApiClient {
         };
 
         try {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), this.config.timeout);
+
             const response = await fetch(url, {
                 ...options,
                 headers,
+                signal: controller.signal,
             });
 
+            clearTimeout(id);
+
+            if (response.status === 401) {
+                // Handle unauthorized access (e.g., clear session, redirect)
+                // For now, we just throw, but the AuthService will handle the cleanup
+                throw new Error('Unauthorized');
+            }
+
             if (!response.ok) {
-                throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                const errorBody = await response.text();
+                throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorBody}`);
+            }
+
+            // Handle 204 No Content
+            if (response.status === 204) {
+                return {} as T;
             }
 
             return await response.json();

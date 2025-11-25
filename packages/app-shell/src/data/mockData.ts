@@ -1,4 +1,4 @@
-import { Patient, Vital, Medication, LabResult, Encounter } from '../types';
+import type { Patient, Vital, Medication, LabResult, Encounter, Appointment } from '../types';
 
 export const mockPatients: Patient[] = [
     {
@@ -183,4 +183,39 @@ export const mockEncounters: Encounter[] = [
         provider: 'Dr. Johnson',
         notes: 'All vitals normal. Advised to continue healthy lifestyle.',
     },
+];
+
+export const mockAppointments: Appointment[] = [
+    {
+        id: 'A001',
+        patientId: 'P001',
+        patientName: 'John Doe',
+        date: '2024-11-25',
+        time: '09:00',
+        type: 'Follow-up',
+        provider: 'Dr. Smith',
+        status: 'Scheduled',
+        notes: 'Regular checkup'
+    },
+    {
+        id: 'A002',
+        patientId: 'P002',
+        patientName: 'Sarah Johnson',
+        date: '2024-11-25',
+        time: '10:30',
+        type: 'Consultation',
+        provider: 'Dr. Williams',
+        status: 'Scheduled',
+        notes: 'New patient consultation'
+    },
+    {
+        id: 'A003',
+        patientId: 'P003',
+        patientName: 'Michael Chen',
+        date: '2024-11-26',
+        time: '14:00',
+        type: 'Lab Review',
+        provider: 'Dr. Smith',
+        status: 'Scheduled'
+    }
 ];

@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && rsync -avm --include='*.css' --include='*/' --exclude='*' src/ dist/",
         "dev": "tsc --watch"
     },
     "keywords": [
