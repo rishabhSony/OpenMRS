@@ -60,6 +60,9 @@ This walkthrough documents the successful integration of the OpenMRS frontend ap
 
 ![Reports Dashboard](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/reports_dashboard_1764043130852.png)
 
+### 8. Documentation (New)
+- **Deployment Guide**: Added `Guide_for_deploying_HMS_in_a_low_resource_clinic_setting.md` to the repository, detailing hardware and software requirements for offline clinic setup.
+
 ## Verification Results
 
 ### Build Verification
