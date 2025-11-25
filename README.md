@@ -33,27 +33,36 @@ A modern, high-performance frontend for OpenMRS, built with React, TypeScript, a
 -   **Patient Demographics**: Age and gender distribution charts.
 -   **Clinical Metrics**: Top diagnoses and registration trends.
 -   **Geographic Data**: Patient distribution by state.
--   **Synthetic Data**: Realistic Indian patient data for demonstration.
+-   **Synthetic Data**: Scaled to **1,248 realistic Indian patient records** for performance testing and demonstration.
 -   **RBAC Protected**: Restricted to Doctor/Admin roles.
 
-### 5. Security & Authentication
+### 5. Schedule & Team Notes (`/schedule`)
+-   **Unified Calendar**: View shifts, appointments, and team notes in one place.
+-   **Team Notes**: Add daily notes for staff communication with "Urgent" priority flagging.
+-   **Appointment Creation**: Directly schedule appointments from the calendar view.
+
+### 6. Enhanced Appointments (`/appointments`)
+-   **Daily Patient Logs**: New "Daily Log" feature allowing nurses to quickly add multiple patient entries for a specific date.
+-   **Visual Summaries**: Calendar displays summary counts of logs per day.
+
+### 7. Security & Authentication
 -   **Cookie-Based Auth**: Secure `JSESSIONID` cookie management via Vite Proxy.
 -   **Session Timeout**: Auto-logout after 15 minutes of inactivity.
 -   **Enhanced RBAC**: Granular permissions for Receptionist, Nurse, and Doctor roles.
 -   **Protected Routes**: Route-level security with role validation.
 
-### 6. Internationalization (i18n)
+### 8. Internationalization (i18n)
 -   **Multi-Language**: Full support for English (🇺🇸) and Hindi (🇮🇳).
 -   **Language Switcher**: Easy toggling between languages.
 -   **Persistence**: Language preference saved to local storage.
 
-### 6. Offline & Optimization
+### 9. Offline & Optimization
 -   **PWA**: Installable Progressive Web App with asset caching.
 -   **Offline Sync**: `TanStack Query` with `localStorage` persistence for offline patient data access.
 -   **Service Worker**: Automatic caching of static assets for faster load times.
 -   **Optimized**: Efficient asset loading and caching strategies.
 
-### 7. Advanced Features
+### 10. Advanced Features
 -   **Dynamic Form Builder**: Schema-driven form engine for customizable patient registration.
 -   **Form Engine**: Supports text, number, date, select fields with validation.
 -   **Reusable Components**: Modular form components using react-hook-form.

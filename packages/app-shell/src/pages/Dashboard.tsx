@@ -1,20 +1,26 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Card } from '@openmrs-enterprise/ui-components';
+import { AdminDashboard } from '../components/dashboard/AdminDashboard';
+import { NurseDashboard } from '../components/dashboard/NurseDashboard';
+import { hasRole, ROLES } from '@openmrs-enterprise/core';
 
 export const Dashboard: React.FC = () => {
     const { user } = useAuth();
 
+    const isNurse = user && hasRole(user.roles, [ROLES.NURSE]) && !hasRole(user.roles, [ROLES.DOCTOR]);
+
     return (
         <div className="dashboard-page">
-            <h1>Welcome back, {user?.username}</h1>
-            <p>Welcome to the HMS Dashboard.</p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem', marginTop: '2rem' }}>
-                <Card title="Quick Actions">
-                    <p>Select an option from the sidebar to get started.</p>
-                </Card>
+            <div style={{ marginBottom: '2rem' }}>
+                <h1 style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                    Welcome back, {user?.username}
+                </h1>
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem' }}>
+                    Here's what's happening in the hospital today.
+                </p>
             </div>
+
+            {isNurse ? <NurseDashboard /> : <AdminDashboard />}
         </div>
     );
 };

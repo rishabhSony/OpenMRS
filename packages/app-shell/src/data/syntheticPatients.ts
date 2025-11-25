@@ -5,7 +5,7 @@ export interface SyntheticPatient {
     id: string;
     name: string;
     age: number;
-    gender: 'M' | 'F';
+    gender: 'M' | 'F' | 'O';
     city: string;
     state: string;
     diagnosis?: string;
@@ -22,6 +22,9 @@ const indianNames = {
         'Priya Sharma', 'Anjali Patel', 'Neha Singh', 'Kavita Reddy', 'Sunita Gupta',
         'Pooja Mehta', 'Ritu Kumar', 'Meera Rao', 'Lakshmi Verma', 'Divya Joshi',
         'Sneha Nair', 'Rekha Iyer', 'Geeta Desai', 'Anita Pillai', 'Shalini Kapoor'
+    ],
+    other: [
+        'Alex', 'Sam', 'Jordan', 'Taylor', 'Casey', 'Jamie', 'Riley', 'Morgan'
     ]
 };
 
@@ -56,8 +59,15 @@ export const generateSyntheticPatients = (count: number = 100): SyntheticPatient
     const patients: SyntheticPatient[] = [];
 
     for (let i = 0; i < count; i++) {
-        const gender = Math.random() > 0.5 ? 'M' : 'F';
-        const nameList = gender === 'M' ? indianNames.male : indianNames.female;
+        const rand = Math.random();
+        // 48% Male, 48% Female, 4% Other/Transgender
+        const gender = rand < 0.48 ? 'M' : rand < 0.96 ? 'F' : 'O';
+
+        let nameList: string[];
+        if (gender === 'M') nameList = indianNames.male;
+        else if (gender === 'F') nameList = indianNames.female;
+        else nameList = indianNames.other;
+
         const name = nameList[Math.floor(Math.random() * nameList.length)];
         const location = indianCities[Math.floor(Math.random() * indianCities.length)];
         const age = Math.floor(Math.random() * 70) + 10; // 10-80 years

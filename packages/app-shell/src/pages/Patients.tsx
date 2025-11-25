@@ -165,7 +165,12 @@ const PatientDetails: React.FC<{ patient: Patient; onClose: () => void }> = ({ p
                             content: (
                                 <div className="details-grid">
                                     <Card title="Personal Information">
-                                        <InfoRow label="Gender" value={patient.person.gender === 'M' ? 'Male' : patient.person.gender === 'F' ? 'Female' : patient.person.gender} />
+                                        <InfoRow label="Gender" value={
+                                            patient.person.gender === 'M' ? 'Male' :
+                                                patient.person.gender === 'F' ? 'Female' :
+                                                    ((patient.person.gender as string) === 'O' || (patient.person.gender as string) === 'T') ? 'Transgender' :
+                                                        patient.person.gender
+                                        } />
                                         <InfoRow label="Birth Date" value={new Date(patient.person.birthdate).toLocaleDateString()} />
                                         <InfoRow label="Age" value={patient.person.age.toString()} />
                                     </Card>
@@ -230,17 +235,15 @@ export const Patients: React.FC = () => {
             render: (patient: Patient) => {
                 const name = patient.person.names.find(n => n.preferred) || patient.person.names[0];
                 const fullName = name ? `${name.givenName} ${name.familyName}` : 'Unknown';
-                const initials = name ? `${name.givenName[0]}${name.familyName[0]}` : '??';
                 return (
                     <div className="patient-name-cell">
-                        <div className="avatar-placeholder">
-                            {initials}
-                        </div>
                         <div>
-                            <span className="patient-name">
+                            <span className="patient-name" style={{ fontSize: '1rem', fontWeight: 600 }}>
                                 {fullName}
                             </span>
-                            <span className="patient-id">{patient.identifiers[0]?.identifier}</span>
+                            <span className="patient-id" style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
+                                {patient.identifiers[0]?.identifier}
+                            </span>
                         </div>
                     </div>
                 );
@@ -249,11 +252,28 @@ export const Patients: React.FC = () => {
         {
             key: 'gender',
             header: 'Gender',
-            render: (patient: Patient) => (
-                <Badge variant={patient.person.gender === 'M' ? 'primary' : 'success'}>
-                    {patient.person.gender === 'M' ? 'Male' : 'Female'}
-                </Badge>
-            )
+            render: (patient: Patient) => {
+                const genderCode = patient.person.gender;
+                let genderLabel = 'Unknown';
+                let variant: 'primary' | 'success' | 'warning' | 'default' = 'default';
+
+                if (genderCode === 'M') {
+                    genderLabel = 'Male';
+                    variant = 'primary';
+                } else if (genderCode === 'F') {
+                    genderLabel = 'Female';
+                    variant = 'success';
+                } else if ((genderCode as string) === 'O' || (genderCode as string) === 'T') {
+                    genderLabel = 'Transgender';
+                    variant = 'warning';
+                }
+
+                return (
+                    <Badge variant={variant}>
+                        {genderLabel}
+                    </Badge>
+                );
+            }
         },
         {
             key: 'age',

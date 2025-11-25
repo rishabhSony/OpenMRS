@@ -16,6 +16,9 @@ import './App.css';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
+const Schedule = React.lazy(() => import('./pages/Schedule').then(module => ({ default: module.Schedule })));
+
+
 interface AppNavItem extends NavItem {
     roles?: string[];
 }
@@ -95,6 +98,7 @@ const AppContent: React.FC = () => {
                             <Route path="/patients" element={<Patients />} />
                             <Route path="/clinical" element={<Clinical />} />
                             <Route path="/appointments" element={<Appointments />} />
+                            <Route path="/schedule" element={<Schedule />} /> {/* Added Schedule route */}
                             <Route path="/reports" element={
                                 <ProtectedRoute allowedRoles={['System Developer']}>
                                     <Reports />

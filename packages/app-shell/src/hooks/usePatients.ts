@@ -18,37 +18,46 @@ export const usePatients = () => {
     const queryClient = useQueryClient();
 
     const fetchPatientsFn = async () => {
-        try {
-            if (query) {
-                const endpoint = `/patient?q=${query}&v=full`;
-                const response = await client.get<{ results: Patient[] }>(endpoint);
-                return response.results || [];
-            } else {
-                // Fetch recent patients from active visits if no query
-                const endpoint = `/visit?includeInactive=false&v=default&limit=10`;
-                const response = await client.get<{ results: any[] }>(endpoint);
+        // Use synthetic data for demo purposes
+        // In a real app, this would be an API call
+        const { generateSyntheticPatients } = await import('../data/syntheticPatients');
+        const syntheticData = generateSyntheticPatients(1248);
 
-                // Extract unique patient UUIDs
-                const patientUuids = new Set<string>();
-                response.results.forEach((visit) => {
-                    if (visit.patient) {
-                        patientUuids.add(visit.patient.uuid);
-                    }
-                });
-
-                if (patientUuids.size === 0) return [];
-
-                // Fetch full details for each patient
-                const patientPromises = Array.from(patientUuids).map(uuid =>
-                    client.get<Patient>(`/patient/${uuid}?v=full`)
-                );
-
-                return await Promise.all(patientPromises);
-            }
-        } catch (err) {
-            console.error('Failed to fetch patients:', err);
-            throw err;
-        }
+        // Map synthetic data to OpenMRS Patient structure
+        return syntheticData.map(p => ({
+            uuid: p.id,
+            display: p.name,
+            identifiers: [{
+                uuid: 'id-' + p.id,
+                identifier: p.id.replace('PAT-', ''),
+                identifierType: { uuid: 'type-1', name: 'OpenMRS ID', description: '' },
+                preferred: true
+            }],
+            person: {
+                uuid: 'person-' + p.id,
+                display: p.name,
+                gender: p.gender,
+                age: p.age,
+                birthdate: new Date(new Date().getFullYear() - p.age, 0, 1).toISOString(),
+                birthdateEstimated: true,
+                dead: false,
+                names: [{
+                    uuid: 'name-' + p.id,
+                    givenName: p.name.split(' ')[0],
+                    familyName: p.name.split(' ').slice(1).join(' '),
+                    preferred: true
+                }],
+                addresses: [{
+                    uuid: 'addr-' + p.id,
+                    preferred: true,
+                    cityVillage: p.city,
+                    stateProvince: p.state,
+                    country: 'India'
+                }],
+                attributes: []
+            },
+            voided: false
+        } as Patient));
     };
 
     const { data: patients = [], isLoading, error } = useQuery({
