@@ -31,10 +31,10 @@ export const useAppointments = () => {
             // Default to 7 days ahead if no end date
             const end = endDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-            const response = await client.get<{ results: Appointment[] }>(
+            const response = await client.get<Appointment[]>(
                 `/appointments?fromDate=${start}&toDate=${end}&v=full`
             );
-            setAppointments(response.results || []);
+            setAppointments(Array.isArray(response) ? response : []);
         } catch (err) {
             console.error('Failed to fetch appointments:', err);
             // Don't show toast on 404/empty, just set empty

@@ -18,8 +18,8 @@ export class AuthService {
     private readonly STORAGE_KEY = 'hms_session';
 
     private constructor() {
-        // Initialize with default demo URL
-        this.client = new ApiClient({ baseUrl: 'https://demo.openmrs.org/openmrs/ws/rest/v1' });
+        // Initialize with default URL (can be overridden by configure)
+        this.client = new ApiClient({ baseUrl: 'https://dev3.openmrs.org/openmrs/ws/rest/v1' });
         this.loadSession();
     }
 

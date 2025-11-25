@@ -29,16 +29,31 @@ export const usePatients = () => {
             // OpenMRS requires a query parameter for patient search
             // If no query is provided, we won't fetch anything to avoid overloading
             // In a real app, we might fetch a specific cohort or recent patients
-            if (!query) {
-                setPatients([]);
-                setLoading(false);
-                return;
+            if (query) {
+                const endpoint = `/patient?q=${query}&v=full`;
+                const response = await client.get<{ results: Patient[] }>(endpoint);
+                setPatients(response.results || []);
+            } else {
+                // Fetch recent patients from active visits if no query
+                const endpoint = `/visit?includeInactive=false&v=default&limit=10`;
+                const response = await client.get<{ results: any[] }>(endpoint);
+
+                // Extract unique patient UUIDs
+                const patientUuids = new Set<string>();
+                response.results.forEach((visit) => {
+                    if (visit.patient) {
+                        patientUuids.add(visit.patient.uuid);
+                    }
+                });
+
+                // Fetch full details for each patient
+                const patientPromises = Array.from(patientUuids).map(uuid =>
+                    client.get<Patient>(`/patient/${uuid}?v=full`)
+                );
+
+                const patients = await Promise.all(patientPromises);
+                setPatients(patients);
             }
-
-            const endpoint = `/patient?q=${query}&v=full`;
-            const response = await client.get<{ results: Patient[] }>(endpoint);
-
-            setPatients(response.results || []);
         } catch (err) {
             console.error('Failed to fetch patients:', err);
             setError('Failed to load patients');
@@ -51,7 +66,13 @@ export const usePatients = () => {
     const createPatient = async (patientData: any) => {
         setLoading(true);
         try {
-            // Construct OpenMRS Person/Patient payload
+            // 1. Generate a valid OpenMRS ID
+            // Source UUID for "Generator for OpenMRS ID" on dev3
+            const idSourceUuid = '8549f706-7e85-4c1d-9424-217d50a2988b';
+            const idResponse = await client.post<{ identifier: string }>(`/idgen/identifiersource/${idSourceUuid}/identifier`, {});
+            const openMrsId = idResponse.identifier;
+
+            // 2. Construct OpenMRS Person/Patient payload
             const payload = {
                 person: {
                     names: [{
@@ -59,30 +80,30 @@ export const usePatients = () => {
                         familyName: patientData.lastName,
                         preferred: true
                     }],
-                    gender: patientData.gender,
+                    gender: patientData.gender === 'Male' ? 'M' : patientData.gender === 'Female' ? 'F' : 'U',
                     birthdate: patientData.birthDate,
                     addresses: [{
                         address1: patientData.address,
                         cityVillage: patientData.city,
-                        country: patientData.country,
-                        postalCode: patientData.postalCode
+                        country: patientData.country || 'India', // Default to India if missing
+                        postalCode: patientData.zipCode
                     }]
                 },
                 identifiers: [{
-                    identifier: Math.floor(Math.random() * 1000000).toString(), // Generate random ID for now
-                    identifierType: '8d79403a-c2cc-11de-8d13-0010c6dffd0f', // OpenMRS ID Type UUID (example)
-                    location: '8d6c993e-c2cc-11de-8d13-0010c6dffd0f', // Unknown Location UUID (example)
+                    identifier: openMrsId,
+                    identifierType: '05a29f94-c0ed-11e2-94be-8c13b969e334', // OpenMRS ID Type UUID
+                    location: '2ccae22b-26ab-4c40-a813-55462e27a0c8', // Site 44 UUID (Valid Location)
                     preferred: true
                 }]
             };
 
             const response = await client.post<Patient>('/patient', payload);
             setPatients(prev => [...prev, response]);
-            showToast('Patient created successfully', 'success');
+            showToast(`Patient created: ${openMrsId}`, 'success');
             return response;
         } catch (err) {
             console.error('Failed to create patient:', err);
-            showToast('Failed to create patient', 'error');
+            showToast('Failed to create patient. Please try again.', 'error');
             throw err;
         } finally {
             setLoading(false);

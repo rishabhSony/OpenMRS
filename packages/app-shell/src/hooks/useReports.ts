@@ -21,10 +21,19 @@ export const useReports = () => {
         setLoading(true);
         try {
             // Fetch Patients (limit to 100 for stats to avoid heavy load)
-            const patientsPromise = client.get<{ results: Patient[]; totalCount?: number }>('/patient?v=full&limit=100');
+            // Wrap in try-catch to prevent crashing if /patient fails (which it does on dev3 with limit)
+            const patientsPromise = client.get<{ results: Patient[]; totalCount?: number }>('/patient?v=full&limit=100')
+                .catch(err => {
+                    console.warn('Failed to fetch patients for reports:', err);
+                    return { results: [], totalCount: 0 };
+                });
 
             // Fetch Active Visits
-            const visitsPromise = client.get<{ results: Visit[]; totalCount?: number }>('/visit?includeInactive=false&v=default&limit=100');
+            const visitsPromise = client.get<{ results: Visit[]; totalCount?: number }>('/visit?includeInactive=false&v=default&limit=100')
+                .catch(err => {
+                    console.warn('Failed to fetch visits for reports:', err);
+                    return { results: [], totalCount: 0 };
+                });
 
             // Fetch Appointments for this week
             const today = new Date();
@@ -34,9 +43,12 @@ export const useReports = () => {
             const startStr = startOfWeek.toISOString().split('T')[0];
             const endStr = endOfWeek.toISOString().split('T')[0];
 
-            const appointmentsPromise = client.get<{ results: Appointment[] }>(
+            const appointmentsPromise = client.get<Appointment[]>(
                 `/appointments?fromDate=${startStr}&toDate=${endStr}&v=default`
-            );
+            ).catch(err => {
+                console.warn('Failed to fetch appointments for reports:', err);
+                return [];
+            });
 
             const [patientsRes, visitsRes, appointmentsRes] = await Promise.all([
                 patientsPromise,
@@ -45,9 +57,19 @@ export const useReports = () => {
             ]);
 
             // Process Patient Data for Gender Distribution
+            // If patients API failed, try to use patients from visits
+            let patientsForStats = patientsRes.results;
+            if (patientsForStats.length === 0 && visitsRes.results.length > 0) {
+                // Extract patients from visits if main patient fetch failed
+                // Note: Visits v=default might not have full person details, but let's try
+                patientsForStats = visitsRes.results
+                    .map(v => v.patient)
+                    .filter(p => p && p.person) as unknown as Patient[];
+            }
+
             const genderCounts: Record<string, number> = { M: 0, F: 0, O: 0, U: 0 };
-            patientsRes.results.forEach(p => {
-                const gender = p.person.gender || 'U';
+            patientsForStats.forEach(p => {
+                const gender = p.person?.gender || 'U';
                 genderCounts[gender] = (genderCounts[gender] || 0) + 1;
             });
 
@@ -62,7 +84,10 @@ export const useReports = () => {
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             days.forEach(d => appointmentsByDay[d] = 0);
 
-            (appointmentsRes.results || []).forEach(appt => {
+            // appointmentsRes is an array, not { results: ... }
+            const appointments = Array.isArray(appointmentsRes) ? appointmentsRes : [];
+
+            appointments.forEach(appt => {
                 const date = new Date(appt.startDateTime);
                 const dayName = days[date.getDay()];
                 appointmentsByDay[dayName]++;
@@ -75,7 +100,7 @@ export const useReports = () => {
 
             // Calculate Today's Appointments
             const todayStr = new Date().toISOString().split('T')[0];
-            const todayCount = (appointmentsRes.results || []).filter(a =>
+            const todayCount = appointments.filter(a =>
                 a.startDateTime.startsWith(todayStr)
             ).length;
 

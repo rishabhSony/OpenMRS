@@ -63,6 +63,18 @@ This walkthrough documents the successful integration of the OpenMRS frontend ap
 ### 8. Documentation (New)
 - **Deployment Guide**: Added `Guide_for_deploying_HMS_in_a_low_resource_clinic_setting.md` to the repository, detailing hardware and software requirements for offline clinic setup.
 
+### 9. Maintenance & Improvements (New)
+- **Debugging**: Resolved patient creation failure by integrating with the OpenMRS `idgen` module to generate valid IDs.
+- **Configuration**: Refactored API URLs to use `.env` files (`VITE_OPENMRS_API_URL`).
+- **Testing**: Added `vitest` and unit tests for `usePatients` hook.
+
+- **Bug Fixes**:
+    - **Reports Page**: Fixed "failed to load report" error by correctly handling array responses from the `/appointments` endpoint.
+    - **Patient List**: Fixed empty patient list issue by fetching recent patients from active visits when no search query is provided.
+
+![Reports Page Fixed](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/reports_page_after_fix_1764045327290.png)
+![Patient List Populated](/Users/rixax/.gemini/antigravity/brain/e9dbb345-78a7-492e-aa45-e426dcb841b8/patient_list_final_1764045599873.png)
+
 ## Verification Results
 
 ### Build Verification
